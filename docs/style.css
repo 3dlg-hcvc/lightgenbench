@@ -1,0 +1,86 @@
+/* LightGenBench project page. Concise layout after objaverse.allenai.org:
+   a claim, one hero image, then blocks of a bold title, one sentence and one visual. */
+
+:root {
+  --ink: #111110;
+  --ink-soft: #5b5752;
+  --line: #e8e5e1;
+  --accent: #f59e0b;
+  --accent-ink: #b45309;
+  --radius: 14px;
+  --w: 980px;
+  --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0; background: #fff; color: var(--ink);
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased;
+}
+a { color: var(--accent-ink); text-decoration: none; }
+a:hover { text-decoration: underline; }
+img { display: block; max-width: 100%; height: auto; }
+
+.wrap { max-width: var(--w); margin: 0 auto; padding: 0 20px; }
+.wide { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+
+/* top bar */
+.bar { border-bottom: 1px solid var(--line); }
+.bar__in { display: flex; align-items: center; justify-content: space-between; height: 56px; }
+.bar__brand { color: var(--ink); font-weight: 700; letter-spacing: -.02em; display: flex; align-items: center; gap: 9px; }
+.bar__brand:hover { text-decoration: none; }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px 2px rgba(245,158,11,.55); }
+
+/* hero */
+.hero { text-align: center; padding-top: 64px; padding-bottom: 34px; }
+.hero h1 { margin: 0; font-size: clamp(44px, 8vw, 76px); font-weight: 800; letter-spacing: -.045em; line-height: 1.02; }
+.hero__claim { margin: 12px 0 30px; font-size: clamp(19px, 2.8vw, 26px); color: var(--ink-soft); letter-spacing: -.015em; }
+.buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.btn {
+  display: inline-flex; align-items: center; padding: 10px 20px; border-radius: 999px;
+  font-size: 15px; font-weight: 600; border: 1px solid var(--line);
+}
+.btn:hover { text-decoration: none; }
+.btn--off { color: #a8a29e; background: #fafaf9; cursor: default; }
+.btn--on { color: var(--ink); background: var(--accent); border-color: var(--accent); }
+.btn--on:hover { background: #fbbf24; }
+.hero__img img { width: 100%; border-radius: var(--radius); }
+
+/* blocks: bold title, one sentence, one visual */
+.block { padding-top: 84px; }
+.lead { font-size: 20px; line-height: 1.55; margin: 0 0 22px; max-width: 760px; color: var(--ink-soft); }
+.lead b { color: var(--ink); font-weight: 700; }
+.fig { width: 100%; border-radius: var(--radius); cursor: zoom-in; }
+.fig--line { border: 1px solid var(--line); padding: 12px; background: #fff; }
+
+.video { border-radius: var(--radius); overflow: hidden; background: #000; line-height: 0; }
+.video video { width: 100%; height: auto; display: block; }
+
+.code {
+  position: relative; background: #111110; color: #e7e5e4; border-radius: var(--radius);
+  padding: 18px 88px 18px 20px; overflow-x: auto; font-family: var(--mono); font-size: 14px;
+}
+/* wrap instead of scrolling, so the Copy button never covers part of the command on a phone */
+.code pre { margin: 0; white-space: pre-wrap; word-break: break-word; }
+.copy {
+  position: absolute; top: 12px; right: 12px; background: #292524; color: #d6d3d1;
+  border: 1px solid #44403c; border-radius: 8px; padding: 5px 12px; font: inherit; font-size: 12px; cursor: pointer;
+}
+.copy:hover { background: #44403c; color: #fff; }
+
+/* footer.wrap, not footer: .wrap's margin shorthand would otherwise zero the top margin */
+footer.wrap { margin-top: 96px; padding-top: 26px; padding-bottom: 56px; border-top: 1px solid var(--line); color: var(--ink-soft); font-size: 14px; }
+footer code { font-family: var(--mono); font-size: 13px; }
+
+/* lightbox */
+.lb { position: fixed; inset: 0; z-index: 100; display: none; background: rgba(10,10,9,.94); padding: 24px; cursor: zoom-out; }
+.lb.on { display: flex; align-items: center; justify-content: center; }
+.lb img { max-width: 100%; max-height: 100%; border-radius: 8px; }
+
+@media (max-width: 640px) {
+  .block { padding-top: 60px; }
+  .lead { font-size: 18px; }
+  .fig--line { padding: 6px; }
+}
