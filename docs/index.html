@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LightGenBench: A Benchmark for 3D Emission Generation</title>
+<meta name="description" content="LightGenBench: 36,826 emissive 3D assets in UV, voxel and multi-view form, and four baselines for generating where a 3D asset glows and in what color.">
+<meta property="og:title" content="LightGenBench: A Benchmark for 3D Emission Generation">
+<meta property="og:description" content="36,826 emissive 3D assets in three representations, and four baselines for emission generation.">
+<meta property="og:image" content="assets/hf_teaser.jpg">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='7' fill='%23f59e0b'/%3E%3Ccircle cx='16' cy='16' r='13' fill='none' stroke='%23f59e0b' stroke-opacity='.35' stroke-width='2'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap bar__in">
+    <a class="bar__brand" href="#top"><span class="dot"></span>LightGenBench</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero wrap">
+    <h1>LightGenBench</h1>
+    <p class="hero__claim">A Benchmark for 3D Emission Generation</p>
+    <!-- TODO(authors): anonymous while the 3DV submission is under review. At camera-ready, add the
+         author line here and a Team block before the footer, as objaverse.allenai.org does. -->
+    <div class="buttons">
+      <a class="btn btn--off" aria-disabled="true">Paper &middot; soon</a>
+      <a class="btn btn--off" aria-disabled="true">arXiv &middot; soon</a>
+      <a class="btn btn--off" aria-disabled="true">Code &middot; soon</a>
+      <a class="btn btn--on" href="https://huggingface.co/datasets/3dlg-hcvc/LightgenBench">&#129303; Hugging Face</a>
+    </div>
+  </section>
+
+  <div class="hero__img wide">
+    <img src="assets/hf_teaser.jpg" alt="A collection of LightGenBench shapes with their emission on: a glowing ring, lamps, robots, a clock, a laptop and a ray gun.">
+  </div>
+
+  <section class="block wrap">
+    <p class="lead"><b>Video.</b> The task, the data and the baselines in two and a half minutes.</p>
+    <div class="video">
+      <video controls preload="none" poster="assets/video_poster.jpg" playsinline>
+        <source src="assets/lightgenbench.mp4" type="video/mp4">
+        <a href="assets/lightgenbench.mp4">Download the video.</a>
+      </video>
+    </div>
+  </section>
+
+  <section class="block wrap">
+    <p class="lead"><b>Emission generation.</b> Previous 3D generation works create assets that reflect light but cannot emit it. Our work generates the emission for an object, so it can light up the scene.</p>
+    <img class="fig" src="assets/teaser.jpg" alt="A bedroom rendered with the assets' emission off, then on: the chandelier, lamps and monitor light the room.">
+  </section>
+
+  <section class="block wrap">
+    <p class="lead"><b>36,826 emissive assets.</b> Artist-made shapes in 106 categories, curated from TexVerse, each with albedo, metallic, roughness, opacity and emission.</p>
+    <img class="fig" src="assets/dataset_gallery.jpg" alt="Dataset shapes rendered with their emission off (top) and on (bottom).">
+  </section>
+
+  <section class="block wrap">
+    <p class="lead"><b>Four baselines.</b> We adapt UV, sparse-voxel, multi-view and segmentation-based generators to emission, and score where each one makes an asset glow and how.</p>
+    <img class="fig fig--line" src="assets/baselines.png" alt="Diagram of the four emission generation pipelines.">
+  </section>
+
+  <section class="block wrap">
+    <p class="lead"><b>Far from solved.</b> In the paper, the best baseline, TRELLIS.2-Emission, reaches an IoU of only 0.263 against the artist-made emission.</p>
+    <img class="fig fig--line" src="assets/qual_rendering.jpg" alt="Three shapes: the input image, the ground-truth emission, and the four baselines' emission, rendered in a dark room.">
+  </section>
+
+  <section class="block wrap" id="download">
+    <p class="lead"><b>Download.</b> LightGenBench is openly available on <a href="https://huggingface.co/datasets/3dlg-hcvc/LightgenBench">Hugging Face</a>, split into 36,426 train, 200 validation and 200 test shapes.</p>
+    <div class="code">
+      <button class="copy" data-copy="#dl">Copy</button>
+      <pre id="dl">hf download 3dlg-hcvc/LightgenBench --repo-type dataset --local-dir lightgenbench</pre>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap">
+  Every shape keeps the license of its source Sketchfab model; <code>metadata.parquet</code> lists the license, author and source URL of each.
+  Built on <a href="https://huggingface.co/datasets/YiboZhang2001/TexVerse">TexVerse</a>.
+</footer>
+
+<div class="lb" id="lb"><img alt=""></div>
+<script src="main.js"></script>
+</body>
+</html>
