@@ -18,14 +18,13 @@ Coming soon.
 
 
 ## Dataset
-Submit the short access form on the [Hugging Face dataset page](https://huggingface.co/datasets/3dlg-hcvc/LightgenBench) once (access is granted right away), then log in and download (about 117 GB):
+The dataset is on [Hugging Face](https://huggingface.co/datasets/3dlg-hcvc/LightgenBench).
+Request access on that page (it is granted right away), then download and unpack it:
 ```bash
 hf auth login
 hf download 3dlg-hcvc/LightgenBench --repo-type dataset --local-dir lightgenbench
 cd lightgenbench && for t in data/*/*/*.tar; do tar -xf "$t"; done
 ```
-The dataset is split into 36,426 train, 200 validation and 200 test shapes.
-See the [dataset card](https://huggingface.co/datasets/3dlg-hcvc/LightgenBench) for the file layout and data format.
 
 
 ## Baselines
