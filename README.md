@@ -39,9 +39,17 @@ Code and checkpoints: coming soon.
 
 
 ## Evaluation
+Our evaluation separately measures where an asset emits and how, on points sampled on its surface:
+1. **Sample points.** For each asset, we sample 50,000 points uniformly on the input mesh and read the reference emission of each point from the original asset.
+2. **Look up predictions.** The predicted emission at each point is read from the method's own output by a nearest-neighbor lookup: the nearest occupied voxel for O-Voxel outputs, or the nearest atlas texel for UV-atlas outputs (multi-view outputs are back-projected into a UV atlas first).
+3. **Score.** IoU for the emissive mask, with prediction and reference thresholded at 1/255, measures where the asset emits; MAE and PSNR on the emissive color over all points measure how. We report the mean over five random seeds.
+
 The validation split is used for model selection and the test set for the reported numbers.
-We sample 50,000 points on each asset's surface and report IoU for the emissive mask, and MAE and PSNR on the emissive color, averaged over five random seeds.
-Code: coming soon.
+
+To evaluate your predictions, run (coming soon):
+```bash
+python evaluate.py --pred_dir /path/to/predictions --split test
+```
 <!-- TODO(code release): the evaluation samples points on the TexVerse GLBs, which the dataset does not include; say how to get them. -->
 
 
