@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8"><title>LightGenBench test shapes</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#0a0a0a; color:#e0e0e0; font-family:'Segoe UI',Arial,sans-serif;
+       display:flex; flex-direction:column; height:100vh; overflow:hidden; }
+.header { padding:10px 18px; background:#141414; border-bottom:1px solid #2a2a2a;
+          display:flex; align-items:center; gap:14px; flex-wrap:wrap; flex:0 0 auto; }
+.header h2 { font-size:14px; font-weight:600; }
+.header label { font-size:12px; color:#aaa; }
+.header select, .header button {
+  background:#1e1e1e; color:#e0e0e0; border:1px solid #333; border-radius:4px;
+  padding:4px 8px; font-size:13px; cursor:pointer;
+}
+.hint { color:#888; font-size:12px; max-width:760px; }
+.about { color:#fc8; font-size:12px; max-width:900px; line-height:1.45; }
+.note { color:#8cf; font-size:12px; }
+/* Six panels stay on ONE row and scroll horizontally rather than wrapping: the orbit-synced
+   comparison is only worth anything if the representations are visible side by side. */
+.row { display:flex; width:100%; flex:1 1 auto; min-height:0; overflow-x:auto; overflow-y:hidden; }
+.cell { flex:1 0 300px; display:flex; flex-direction:column; border-right:1px solid #222;
+        min-width:300px; }
+.cell:last-child { border-right:none; }
+.cap { padding:6px 10px; background:#111; border-bottom:1px solid #222; font-size:11px; color:#8cf; }
+.pane { flex:1; position:relative; }
+.pane canvas { display:block; width:100%; height:100%; }
+.research { display:contents; }
+/* "embed": true — the iframe on the public project page */
+body.embed { background:#000; }
+.embed .research, .embed .header h2, .embed .about-row { display:none; }
+.embed .header { background:#000; border-bottom:none; padding:4px 2px 8px; gap:10px; }
+.embed .note { color:#a8a6a1; font-size:13px; }
+.embed .note a { color:#fbbf24; text-decoration:none; }
+/* the picker holds a 32-character uuid: let it shrink rather than push the next button onto a line
+   of its own */
+.embed #sample { flex:1 1 0; min-width:0; max-width:300px; }
+/* one row of panels with gray headings, like the page's results grid; the heading keeps two lines
+   of room, bottom-aligned, so a heading that wraps does not shorten its panel */
+.embed .row { display:grid; grid-template-columns:repeat(6, minmax(0, 1fr));
+              grid-template-rows:minmax(0, 1fr); gap:6px; overflow:hidden; }
+.embed .cell { min-width:0; border:none; overflow:visible; }
+.embed .cap { background:transparent; border-bottom:none; color:#a8a6a1; font-size:13px;
+              line-height:1.3; height:2.7em; min-height:0; padding:0 2px 4px; text-align:center;
+              display:flex; align-items:flex-end; justify-content:center; overflow-wrap:anywhere; }
+.embed .pane { background:#111110; border-radius:6px; overflow:hidden; }
+/* 600 px of iframe = the page's 640 px breakpoint minus its 20 px gutters */
+@media (max-width: 600px) {
+  .embed .row { grid-template-columns:repeat(3, minmax(0, 1fr)); grid-template-rows:repeat(2, minmax(0, 1fr)); gap:4px; }
+  .embed .cap { font-size:11px; }
+  .embed .note { flex-basis:100%; }
+}
+</style></head><body class="embed">
+<div class="header">
+  <h2>LightGenBench test shapes</h2>
+  <button id="prev" type="button" aria-label="previous shape">←</button>
+  <label class="research">sample</label>
+  <select id="sample" aria-label="shape"><option value="68834dab6d6c46bb8fb7ca4d5c218b67">68834dab6d6c46bb8fb7ca4d5c218b67</option>
+<option value="9b91dbf52f2449b3a50070d4d47c88e7">9b91dbf52f2449b3a50070d4d47c88e7</option>
+<option value="93e02c9032084a24af3a4daf6fcea7e8">93e02c9032084a24af3a4daf6fcea7e8</option>
+<option value="4a283c58e1724373b5c651f62a4ca998">4a283c58e1724373b5c651f62a4ca998</option>
+<option value="3af0814f9b5a4e38a1564b6bf74f9a58">3af0814f9b5a4e38a1564b6bf74f9a58</option>
+<option value="a5d6fc6d586e4dadb0e5a208b8b0898c">a5d6fc6d586e4dadb0e5a208b8b0898c</option></select>
+  <button id="next" type="button" aria-label="next shape">→</button>
+  <span class="research">
+  <label>view</label>
+  <select id="chan">
+    <option value="glow">emission glow</option>
+    <option value="intensity">emission intensity</option>
+    <option value="mask">on/off mask (IoU)</option>
+  </select>
+  <label>exposure</label>
+  <select id="gain">
+    <option value="4">4</option>
+    <option value="8" selected>8</option>
+    <option value="16">16</option>
+    <option value="32">32</option>
+  </select>
+  <label>point size</label>
+  <select id="psize">
+    <option value="0.004">0.004</option>
+    <option value="0.008" selected>0.008</option>
+    <option value="0.012">0.012</option>
+    <option value="0.02">0.02</option>
+  </select>
+  </span>
+  <span class="note" id="note">TEXGen-Emission IoU 0.286 / 0.303, MAE 0.0352 / 0.0492  ·  TRELLIS.2-Emission IoU 0.865 / 0.652, MAE 0.0455 / 0.0468  ·  Hunyuan3D-Emission IoU 0.531 / 0.447, MAE 0.0285 / 0.0368  ·  SegviGen-Emission IoU 0.585 / 0.501, MAE 0.2055 / 0.2340   (overall median / mean over 6 rendered objects; a panel scored on fewer shows its n)</span>
+</div>
+<div class="header about-row" style="padding-top:2px;padding-bottom:8px;">
+  <span class="about"></span>
+</div>
+<div class="row" id="row"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(function() {
+  var EPS = 1.0/255.0;
+  var BASE = [0.09, 0.09, 0.10];      // off-point (non-emissive) gray, keeps silhouette
+  var MASK_ON = [0.15, 0.95, 0.55];   // on-point color for the IoU mask view
+  var row = document.getElementById('row');
+  var sampleSel = document.getElementById('sample');
+  var chanSel = document.getElementById('chan');
+  var gainSel = document.getElementById('gain');
+  var sizeSel = document.getElementById('psize');
+  var noteEl = document.getElementById('note');
+  var EMBED = document.body.classList.contains('embed');
+  var CREDITS = {"68834dab6d6c46bb8fb7ca4d5c218b67": "Model by <a href=\"https://sketchfab.com/3d-models/68834dab6d6c46bb8fb7ca4d5c218b67\" target=\"_blank\" rel=\"noopener\">Axel Rodr\u00edguez<\/a> on Sketchfab, <a href=\"https://creativecommons.org/licenses/by/4.0/\" target=\"_blank\" rel=\"noopener\">CC BY 4.0<\/a>", "9b91dbf52f2449b3a50070d4d47c88e7": "Model by <a href=\"https://sketchfab.com/3d-models/9b91dbf52f2449b3a50070d4d47c88e7\" target=\"_blank\" rel=\"noopener\">Luce090<\/a> on Sketchfab, <a href=\"https://creativecommons.org/licenses/by/4.0/\" target=\"_blank\" rel=\"noopener\">CC BY 4.0<\/a>", "93e02c9032084a24af3a4daf6fcea7e8": "Model by <a href=\"https://sketchfab.com/3d-models/93e02c9032084a24af3a4daf6fcea7e8\" target=\"_blank\" rel=\"noopener\">DMC_RELAX<\/a> on Sketchfab, <a href=\"https://creativecommons.org/licenses/by/4.0/\" target=\"_blank\" rel=\"noopener\">CC BY 4.0<\/a>", "4a283c58e1724373b5c651f62a4ca998": "Model by <a href=\"https://sketchfab.com/3d-models/4a283c58e1724373b5c651f62a4ca998\" target=\"_blank\" rel=\"noopener\">tjc997<\/a> on Sketchfab, <a href=\"https://creativecommons.org/licenses/by/4.0/\" target=\"_blank\" rel=\"noopener\">CC BY 4.0<\/a>", "3af0814f9b5a4e38a1564b6bf74f9a58": "Model by <a href=\"https://sketchfab.com/3d-models/3af0814f9b5a4e38a1564b6bf74f9a58\" target=\"_blank\" rel=\"noopener\">SCD PERFORMANCE\u2122\ufe0f<\/a> on Sketchfab, <a href=\"https://creativecommons.org/licenses/by/4.0/\" target=\"_blank\" rel=\"noopener\">CC BY 4.0<\/a>", "a5d6fc6d586e4dadb0e5a208b8b0898c": "Model by <a href=\"https://sketchfab.com/3d-models/a5d6fc6d586e4dadb0e5a208b8b0898c\" target=\"_blank\" rel=\"noopener\">RonnieS<\/a> on Sketchfab, <a href=\"https://creativecommons.org/licenses/by/4.0/\" target=\"_blank\" rel=\"noopener\">CC BY 4.0<\/a>"};  // sha -> attribution HTML (embed only)
+  // The header shows the DATASET-WIDE numbers, not this shape's — per-shape IoU lives in each
+  // panel caption. Stash it so the transient 'loading…' message can be put back.
+  var OVERALL = noteEl.textContent;
+  var cache = {};
+  var panels = [];
+  var sharedXyz = null;
+  var animId = null;
+  var loading = false;
+
+  function b64f32(s) {
+    var bin = atob(s);
+    var buf = new ArrayBuffer(bin.length);
+    var view = new Uint8Array(buf);
+    for (var i = 0; i < bin.length; i++) view[i] = bin.charCodeAt(i);
+    return new Float32Array(buf);
+  }
+  function clamp01(x) { return x < 0 ? 0 : (x > 1 ? 1 : x); }
+  function srgb(x) { x = clamp01(x); return x <= 0.0031308 ? 12.92*x : 1.055*Math.pow(x, 1/2.4) - 0.055; }
+  function hot(t) { return [clamp01(3*t), clamp01(3*t - 1), clamp01(3*t - 2)]; }
+
+  // Emission is dim/sparse. Off-points (max channel <= EPS) render as a dark gray so the
+  // shape silhouette stays visible; on-points glow. `mask` = the IoU on/off set.
+  function computeColors(emis, chan, gain, out) {
+    var n = emis.length / 3;
+    for (var i = 0; i < n; i++) {
+      var r = emis[3*i], g = emis[3*i+1], b = emis[3*i+2];
+      var m = Math.max(r, g, b);
+      var o = 3*i;
+      if (m <= EPS) { out[o] = BASE[0]; out[o+1] = BASE[1]; out[o+2] = BASE[2]; continue; }
+      if (chan === 'mask') {
+        out[o] = MASK_ON[0]; out[o+1] = MASK_ON[1]; out[o+2] = MASK_ON[2];
+      } else if (chan === 'intensity') {
+        var t = 1 - Math.exp(-gain * m);
+        var c = hot(t);
+        out[o] = c[0]; out[o+1] = c[1]; out[o+2] = c[2];
+      } else { // glow: tone-mapped emission color
+        out[o]   = srgb(1 - Math.exp(-gain * r));
+        out[o+1] = srgb(1 - Math.exp(-gain * g));
+        out[o+2] = srgb(1 - Math.exp(-gain * b));
+      }
+    }
+    return out;
+  }
+  // A raw panel (the base color) is drawn as is, in sRGB; every other panel is an emission.
+  function colorsFor(c, out) {
+    if (!c.raw) { computeColors(c.emis, chanSel.value, parseFloat(gainSel.value), out); return; }
+    for (var i = 0; i < c.emis.length; i++) out[i] = srgb(c.emis[i]);
+  }
+  function showNote(sha) {
+    if (EMBED) noteEl.innerHTML = CREDITS[sha] || '';
+    else noteEl.textContent = OVERALL;
+  }
+  // Each sample keeps its own positions: a cached sample shown again must not reuse the
+  // positions of whichever sample was fetched last.
+  function decodePayload(p) {
+    var xyz = b64f32(p.xyz_b64);
+    var clouds = p.panels.map(function(pan) {
+      return { label: pan.label, caption: pan.caption, raw: !!pan.raw, emis: b64f32(pan.emis_b64) };
+    });
+    return { xyz: xyz, clouds: clouds };
+  }
+  function clearPanels() {
+    if (animId) { cancelAnimationFrame(animId); animId = null; }
+    panels.forEach(function(rec) {
+      if (rec.cleanup) rec.cleanup();
+      rec.renderer.dispose();
+      // Browsers cap live WebGL contexts (16 in Chrome) and every switch makes one per panel.
+      rec.renderer.forceContextLoss();
+      if (rec.geom) rec.geom.dispose();
+      if (rec.mat) rec.mat.dispose();
+    });
+    panels = [];
+    row.innerHTML = '';
+  }
+  // Embed mode frames each shape: the points are normalized to [-1,1], wider than the fixed
+  // research camera shows, and a small panel needs points sized in screen pixels, not world units.
+  var EMBED_PX = 2.0;     // point size at the fitted distance, in CSS px
+  function fitSphere(xyz) {
+    var lo = [Infinity, Infinity, Infinity], hi = [-Infinity, -Infinity, -Infinity];
+    for (var i = 0; i < xyz.length; i += 3) {
+      for (var k = 0; k < 3; k++) {
+        if (xyz[i+k] < lo[k]) lo[k] = xyz[i+k];
+        if (xyz[i+k] > hi[k]) hi[k] = xyz[i+k];
+      }
+    }
+    var c = new THREE.Vector3((lo[0]+hi[0])/2, (lo[1]+hi[1])/2, (lo[2]+hi[2])/2);
+    var r = 0.5 * Math.hypot(hi[0]-lo[0], hi[1]-lo[1], hi[2]-lo[2]);
+    return { center: c, radius: r || 1 };
+  }
+  function buildCells(clouds) {
+    clearPanels();
+    var fit = EMBED ? fitSphere(sharedXyz) : null;
+    clouds.forEach(function(c) {
+      var cell = document.createElement('div'); cell.className = 'cell';
+      var cap = document.createElement('div'); cap.className = 'cap';
+      cap.textContent = c.caption;
+      var pane = document.createElement('div'); pane.className = 'pane';
+      var cvs = document.createElement('canvas');
+      pane.appendChild(cvs); cell.appendChild(cap); cell.appendChild(pane);
+      row.appendChild(cell);
+
+      var renderer = new THREE.WebGLRenderer({ canvas: cvs, antialias: true });
+      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.setClearColor(EMBED ? 0x111110 : 0x0a0a0a);
+      var scene = new THREE.Scene();
+      scene.add(new THREE.HemisphereLight(0xffffff, 0x222222, 1.0));
+      if (!EMBED) scene.add(new THREE.AxesHelper(0.4));
+      var camera = new THREE.PerspectiveCamera(40, 1, 0.01, 100);
+      camera.position.set(1.4, 1.1, 1.4);
+      var controls = new THREE.OrbitControls(camera, cvs);
+      controls.enableDamping = true; controls.dampingFactor = 0.12;
+      controls.target.set(0, 0, 0);
+      var fitDist = 0;
+      if (fit) {
+        // The bounding sphere fills the 40-degree vertical field of view, seen from the same
+        // direction as the research camera.
+        fitDist = 1.08 * fit.radius / Math.sin(20 * Math.PI / 180);
+        camera.position.set(1.4, 1.1, 1.4).normalize().multiplyScalar(fitDist).add(fit.center);
+        controls.target.copy(fit.center);
+      }
+
+      var col = new Float32Array(sharedXyz.length);
+      colorsFor(c, col);
+      var geom = new THREE.BufferGeometry();
+      geom.setAttribute('position', new THREE.BufferAttribute(sharedXyz, 3));
+      geom.setAttribute('color', new THREE.BufferAttribute(col, 3));
+      var mat = new THREE.PointsMaterial({
+        size: parseFloat(sizeSel.value), vertexColors: true, sizeAttenuation: true
+      });
+      scene.add(new THREE.Points(geom, mat));
+      var rec = { renderer: renderer, scene: scene, camera: camera, controls: controls,
+                  mat: mat, geom: geom, cloud: c, pane: pane };
+      panels.push(rec);
+      function resize() {
+        var w = pane.clientWidth, h = pane.clientHeight;
+        if (!w || !h) return;
+        renderer.setSize(w, h);
+        camera.aspect = w / h;
+        // A wide panel would otherwise crop the sphere sideways less than a tall one crops it
+        // vertically; widen the vertical field of view on a tall panel instead.
+        if (fit) camera.fov = w >= h ? 40 : 2 * Math.atan(Math.tan(20 * Math.PI / 180) * h / w) * 180 / Math.PI;
+        camera.updateProjectionMatrix();
+        // three.js draws an attenuated point at size * (height / 2) / depth CSS px.
+        if (fit) { mat.size = EMBED_PX * fitDist / (h / 2); mat.needsUpdate = true; }
+      }
+      resize();
+      window.addEventListener('resize', resize);
+      var ro = new ResizeObserver(resize);
+      ro.observe(pane);
+      rec.cleanup = function() {
+        window.removeEventListener('resize', resize);
+        ro.disconnect();
+        controls.dispose();
+      };
+    });
+    var syncing = false;
+    panels.forEach(function(src) {
+      src.controls.addEventListener('change', function() {
+        if (syncing) return;
+        syncing = true;
+        panels.forEach(function(dst) {
+          if (dst === src) return;
+          dst.camera.position.copy(src.camera.position);
+          dst.camera.quaternion.copy(src.camera.quaternion);
+          dst.controls.target.copy(src.controls.target);
+          dst.controls.update();
+        });
+        syncing = false;
+      });
+    });
+    (function animate() {
+      animId = requestAnimationFrame(animate);
+      panels.forEach(function(rec) {
+        rec.controls.update();
+        rec.renderer.render(rec.scene, rec.camera);
+      });
+    })();
+  }
+  function recolor() {
+    panels.forEach(function(rec) {
+      var dst = rec.geom.getAttribute('color').array;
+      colorsFor(rec.cloud, dst);
+      rec.geom.getAttribute('color').needsUpdate = true;
+    });
+  }
+  function setSize(s) {
+    panels.forEach(function(rec) { rec.mat.size = s; rec.mat.needsUpdate = true; });
+  }
+  function loadSample(sha) {
+    if (loading) return;
+    if (cache[sha]) {
+      var s = cache[sha];
+      sharedXyz = s.xyz; buildCells(s.clouds); showNote(sha);
+      return;
+    }
+    loading = true;
+    noteEl.textContent = 'loading ' + sha.slice(0, 12) + '…';
+    fetch('clouds/' + sha + '.json')
+      .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function(p) {
+        var s = decodePayload(p);
+        cache[sha] = s;
+        sharedXyz = s.xyz; buildCells(s.clouds); showNote(sha);
+      })
+      .catch(function(e) { noteEl.textContent = 'failed: ' + e; clearPanels(); })
+      .finally(function() { loading = false; });
+  }
+  function step(d) {
+    var i = sampleSel.selectedIndex;
+    var n = sampleSel.options.length;
+    sampleSel.selectedIndex = (i + d + n) % n;
+    loadSample(sampleSel.value);
+  }
+  sampleSel.addEventListener('change', function() { loadSample(sampleSel.value); });
+  chanSel.addEventListener('change', recolor);
+  gainSel.addEventListener('change', recolor);
+  sizeSel.addEventListener('change', function() { setSize(parseFloat(sizeSel.value)); });
+  document.getElementById('prev').addEventListener('click', function() { step(-1); });
+  document.getElementById('next').addEventListener('click', function() { step(1); });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowLeft') step(-1);
+    if (e.key === 'ArrowRight') step(1);
+  });
+  loadSample(sampleSel.value);
+})();
+</script>
+</body></html>
