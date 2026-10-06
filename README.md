@@ -10,8 +10,7 @@ Simon Fraser University
 [![Dataset](https://img.shields.io/badge/Dataset-FFD21E?style=for-the-badge&logo=huggingface&logoColor=000)](https://huggingface.co/datasets/3dlg-hcvc/LightgenBench)
 
 LightGenBench is a benchmark for emission generation.
-Its [dataset](#dataset) holds 36,826 artist-made emissive assets in 105 categories, curated from [TexVerse](https://huggingface.co/datasets/YiboZhang2001/TexVerse), each as a UV atlas, O-Voxels and multi-view images.
-We evaluate [baselines](#baselines) across four method families: UV-domain, sparse-voxel, multi-view, and segmentation-based generation.
+We curate a [dataset](#dataset) of 36,826 artist-made emissive assets in 105 categories from [TexVerse](https://huggingface.co/datasets/YiboZhang2001/TexVerse), and evaluate [baselines](#baselines) from four method families: UV-domain, sparse-voxel, multi-view, and segmentation-based generation.
 
 
 ## Environment Setup
