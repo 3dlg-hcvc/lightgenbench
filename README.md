@@ -56,8 +56,6 @@ python evaluate.py --pred_dir /path/to/predictions --split test
   year   = {2026}
 }
 ```
-LightGenBench is built on [TexVerse](https://huggingface.co/datasets/YiboZhang2001/TexVerse), so please cite it as well.
-Every shape keeps the license of its source Sketchfab model; `metadata.parquet` lists the license, author and source URL of each.
 
 
 ## Acknowledgements
