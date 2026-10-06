@@ -28,8 +28,13 @@ cd lightgenbench && for t in data/*/*/*.tar; do tar -xf "$t"; done
 
 
 ## Baselines
-For the UV domain, we use TEXGen-Emission; for the voxel domain, TRELLIS.2-Emission; for the multi-view domain, Hunyuan3D-Emission.
-We also include a segmentation-based approach, SegviGen-Emission, which works on voxels.
+| Baseline | Method family | Built on |
+|---|---|---|
+| TEXGen-Emission | UV-domain | [TEXGen](https://github.com/CVMI-Lab/TEXGen) |
+| TRELLIS.2-Emission | sparse-voxel | [TRELLIS.2](https://github.com/microsoft/TRELLIS.2) |
+| Hunyuan3D-Emission | multi-view | [Hunyuan3D-2.1](https://github.com/Tencent-Hunyuan/Hunyuan3D-2.1) |
+| SegviGen-Emission | segmentation-based (on voxels) | [SegviGen](https://github.com/Nelipot-Lee/SegviGen) |
+
 Code and checkpoints: coming soon.
 
 
