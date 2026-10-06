@@ -32,7 +32,7 @@
     <div class="buttons">
       <a class="btn btn--off" aria-disabled="true">Paper &middot; soon</a>
       <a class="btn btn--off" aria-disabled="true">arXiv &middot; soon</a>
-      <a class="btn btn--off" aria-disabled="true">Code &middot; soon</a>
+      <a class="btn btn--on" href="https://github.com/3dlg-hcvc/lightgenbench">GitHub</a>
       <a class="btn btn--on" href="https://huggingface.co/datasets/3dlg-hcvc/LightgenBench">&#129303; Hugging Face</a>
     </div>
   </header>
@@ -106,10 +106,11 @@
 
   <section class="block" id="download">
     <h2>Download</h2>
-    <p>LightGenBench is openly available on <a href="https://huggingface.co/datasets/3dlg-hcvc/LightgenBench">Hugging Face</a>, split into 36,426 train, 200 validation and 200 test shapes.</p>
+    <p>LightGenBench is available on <a href="https://huggingface.co/datasets/3dlg-hcvc/LightgenBench">Hugging Face</a>, split into 36,426 train, 200 validation and 200 test shapes. Submit the short access form on the dataset page once (access is granted right away), then log in and download:</p>
     <div class="code">
       <button class="copy" data-copy="#dl">Copy</button>
-      <pre id="dl">hf download 3dlg-hcvc/LightgenBench --repo-type dataset --local-dir lightgenbench</pre>
+      <pre id="dl">hf auth login
+hf download 3dlg-hcvc/LightgenBench --repo-type dataset --local-dir lightgenbench</pre>
     </div>
   </section>
 
