@@ -5,45 +5,97 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LightGenBench: A Benchmark for 3D Emission Generation</title>
 <meta name="description" content="LightGenBench: 36,826 emissive 3D assets in UV, voxel and multi-view form, and four baselines for generating where a 3D asset glows and in what color.">
+<meta name="color-scheme" content="dark">
 <meta property="og:title" content="LightGenBench: A Benchmark for 3D Emission Generation">
 <meta property="og:description" content="36,826 emissive 3D assets in three representations, and four baselines for emission generation.">
-<meta property="og:image" content="assets/hf_teaser.jpg">
+<meta property="og:image" content="assets/hero_on.jpg">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='7' fill='%23f59e0b'/%3E%3Ccircle cx='16' cy='16' r='13' fill='none' stroke='%23f59e0b' stroke-opacity='.35' stroke-width='2'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<header class="bar">
-  <div class="wrap bar__in">
-    <a class="bar__brand" href="#top"><span class="dot"></span>LightGenBench</a>
-  </div>
-</header>
-
-<main id="top">
-  <section class="hero wrap">
+<main id="top" class="wrap">
+  <header class="hero">
     <h1>LightGenBench</h1>
     <p class="hero__claim">A Benchmark for 3D Emission Generation</p>
-    <!-- TODO(authors): anonymous while the 3DV submission is under review. At camera-ready, add the
-         author line here and a Team block before the footer, as objaverse.allenai.org does. -->
+    <p class="authors">
+      <a href="https://www.sfu.ca/~dya78/">Dongchen Yang</a>
+      <a href="https://yanxg.art/">Xingguang Yan</a>
+      <a href="https://msavva.github.io/">Manolis Savva</a>
+    </p>
+    <p class="affil">Simon Fraser University</p>
     <div class="buttons">
       <a class="btn btn--off" aria-disabled="true">Paper &middot; soon</a>
       <a class="btn btn--off" aria-disabled="true">arXiv &middot; soon</a>
       <a class="btn btn--off" aria-disabled="true">Code &middot; soon</a>
       <a class="btn btn--on" href="https://huggingface.co/datasets/3dlg-hcvc/LightgenBench">&#129303; Hugging Face</a>
     </div>
+  </header>
+
+  <div class="cmp hero__img" style="aspect-ratio: 16 / 9" data-label="Dataset shapes in a dark room: emission off on the left, on on the right">
+    <img src="assets/hero_on.jpg" alt="A collection of LightGenBench shapes in a dark room with their emission on: a glowing ring, lamps, robots, a clock, a laptop and a ray gun.">
+    <img class="cmp__top" src="assets/hero_off.jpg" alt="The same shapes with their emission off: the room is dim and nothing glows.">
+  </div>
+  <p class="lead">Previous 3D generation works create assets that reflect light but cannot emit it. Our work generates the emission for an object, so it can light up the scene. LightGenBench holds 36,826 artist-made emissive assets in 106 categories, curated from TexVerse, each with albedo, metallic, roughness, opacity and emission.</p>
+
+  <section class="block">
+    <h2>Data representations</h2>
+    <p>We cover the main families of 3D generation: the UV, voxel and multi-view domains. For each family we include its data representation: <b>UV atlases</b>, <b>O-Voxels</b> and <b>multi-view images</b>.</p>
+    <img class="fig" src="assets/representations.jpg" alt="An input asset and its three data representations: a UV atlas, O-Voxels and multi-view images.">
   </section>
 
-  <div class="hero__img wide">
-    <img src="assets/hf_teaser.jpg" alt="A collection of LightGenBench shapes with their emission on: a glowing ring, lamps, robots, a clock, a laptop and a ray gun.">
-  </div>
+  <section class="block">
+    <h2>Baselines</h2>
+    <p>For the UV domain, we use <b>TEXGen-Emission</b>; for the voxel domain, <b>TRELLIS.2-Emission</b>; for the multi-view domain, <b>Hunyuan3D-Emission</b>. Since one key challenge for emission generation is to localize the emissive regions, we also include a segmentation-based approach, <b>SegviGen-Emission</b>, which works on voxels.</p>
+    <img class="fig" src="assets/baselines.jpg" alt="The baseline pipelines: TEXGen-Emission on the UV atlas, TRELLIS.2-Emission and SegviGen-Emission on the O-Voxels, and Hunyuan3D-Emission on the multi-view images.">
+  </section>
 
-  <section class="block wrap">
-    <p class="lead"><b>Video.</b> The task, the data and the baselines in two and a half minutes.</p>
+  <section class="block">
+    <h2>Results</h2>
+    <p>Emission generation remains a challenging task: the best baseline, TRELLIS.2-Emission, reaches an IoU of only 0.271.</p>
+    <div class="cmp qgrid" data-label="Results: emission off on the left of every render, on on the right">
+      <div class="qgrid__head qgrid__head--input">Input image</div>
+      <div class="qgrid__head">GT</div>
+      <div class="qgrid__head">TEXGen-Emission</div>
+      <div class="qgrid__head">TRELLIS.2-Emission</div>
+      <div class="qgrid__head">Hunyuan3D-Emission</div>
+      <div class="qgrid__head">SegviGen-Emission</div>
+      <div class="qcell qcell--input"><img src="assets/results/68834dab_input.jpg" alt="Input image: a helmet."></div>
+      <div class="qcell cmp__pane"><img src="assets/results/68834dab_gt.jpg" alt="The helmet, ground-truth emission, emission on."><img class="cmp__top" src="assets/results/68834dab_off.jpg" alt=""></div>
+      <div class="qcell cmp__pane"><img src="assets/results/68834dab_texgen.jpg" alt="The helmet, TEXGen-Emission, emission on."><img class="cmp__top" src="assets/results/68834dab_off.jpg" alt=""></div>
+      <div class="qcell cmp__pane"><img src="assets/results/68834dab_trellis2.jpg" alt="The helmet, TRELLIS.2-Emission, emission on."><img class="cmp__top" src="assets/results/68834dab_off.jpg" alt=""></div>
+      <div class="qcell cmp__pane"><img src="assets/results/68834dab_hunyuan3d.jpg" alt="The helmet, Hunyuan3D-Emission, emission on."><img class="cmp__top" src="assets/results/68834dab_off.jpg" alt=""></div>
+      <div class="qcell cmp__pane"><img src="assets/results/68834dab_segvigen256.jpg" alt="The helmet, SegviGen-Emission, emission on."><img class="cmp__top" src="assets/results/68834dab_off.jpg" alt=""></div>
+      <div class="qcell qcell--input"><img src="assets/results/6c77086d_input.jpg" alt="Input image: a ring."></div>
+      <div class="qcell cmp__pane"><img src="assets/results/6c77086d_gt.jpg" alt="The ring, ground-truth emission, emission on."><img class="cmp__top" src="assets/results/6c77086d_off.jpg" alt=""></div>
+      <div class="qcell cmp__pane"><img src="assets/results/6c77086d_texgen.jpg" alt="The ring, TEXGen-Emission, emission on."><img class="cmp__top" src="assets/results/6c77086d_off.jpg" alt=""></div>
+      <div class="qcell cmp__pane"><img src="assets/results/6c77086d_trellis2.jpg" alt="The ring, TRELLIS.2-Emission, emission on."><img class="cmp__top" src="assets/results/6c77086d_off.jpg" alt=""></div>
+      <div class="qcell cmp__pane"><img src="assets/results/6c77086d_hunyuan3d.jpg" alt="The ring, Hunyuan3D-Emission, emission on."><img class="cmp__top" src="assets/results/6c77086d_off.jpg" alt=""></div>
+      <div class="qcell cmp__pane"><img src="assets/results/6c77086d_segvigen256.jpg" alt="The ring, SegviGen-Emission, emission on."><img class="cmp__top" src="assets/results/6c77086d_off.jpg" alt=""></div>
+      <div class="qcell qcell--input"><img src="assets/results/ac6c9532_input.jpg" alt="Input image: a saber."></div>
+      <div class="qcell cmp__pane"><img src="assets/results/ac6c9532_gt.jpg" alt="The saber, ground-truth emission, emission on."><img class="cmp__top" src="assets/results/ac6c9532_off.jpg" alt=""></div>
+      <div class="qcell cmp__pane"><img src="assets/results/ac6c9532_texgen.jpg" alt="The saber, TEXGen-Emission, emission on."><img class="cmp__top" src="assets/results/ac6c9532_off.jpg" alt=""></div>
+      <div class="qcell cmp__pane"><img src="assets/results/ac6c9532_trellis2.jpg" alt="The saber, TRELLIS.2-Emission, emission on."><img class="cmp__top" src="assets/results/ac6c9532_off.jpg" alt=""></div>
+      <div class="qcell cmp__pane"><img src="assets/results/ac6c9532_hunyuan3d.jpg" alt="The saber, Hunyuan3D-Emission, emission on."><img class="cmp__top" src="assets/results/ac6c9532_off.jpg" alt=""></div>
+      <div class="qcell cmp__pane"><img src="assets/results/ac6c9532_segvigen256.jpg" alt="The saber, SegviGen-Emission, emission on."><img class="cmp__top" src="assets/results/ac6c9532_off.jpg" alt=""></div>
+    </div>
+  </section>
+
+  <section class="block" id="explore">
+    <h2>Interactive comparison</h2>
+    <p>An interactive 3D comparison on test examples: points sampled on the original asset's surface. Drag to orbit.</p>
+    <div class="viewer">
+      <iframe src="viewer/index.html" loading="lazy" title="3D comparison of the ground-truth emission and the four baselines on six test shapes"></iframe>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2>Video</h2>
     <div class="video">
       <video controls preload="none" poster="assets/video_poster.jpg" playsinline>
         <source src="assets/lightgenbench.mp4" type="video/mp4">
@@ -52,33 +104,34 @@
     </div>
   </section>
 
-  <section class="block wrap">
-    <p class="lead"><b>Emission generation.</b> Previous 3D generation works create assets that reflect light but cannot emit it. Our work generates the emission for an object, so it can light up the scene.</p>
-    <img class="fig" src="assets/teaser.jpg" alt="A bedroom rendered with the assets' emission off, then on: the chandelier, lamps and monitor light the room.">
-  </section>
-
-  <section class="block wrap">
-    <p class="lead"><b>36,826 emissive assets.</b> Artist-made shapes in 106 categories, curated from TexVerse, each with albedo, metallic, roughness, opacity and emission.</p>
-    <img class="fig" src="assets/dataset_gallery.jpg" alt="Dataset shapes rendered with their emission off (top) and on (bottom).">
-  </section>
-
-  <section class="block wrap">
-    <p class="lead"><b>Four baselines.</b> We adapt UV, sparse-voxel, multi-view and segmentation-based generators to emission, and score where each one makes an asset glow and how.</p>
-    <img class="fig fig--line" src="assets/baselines.png" alt="Diagram of the four emission generation pipelines.">
-  </section>
-
-  <section class="block wrap">
-    <p class="lead"><b>Far from solved.</b> In the paper, the best baseline, TRELLIS.2-Emission, reaches an IoU of only 0.263 against the artist-made emission.</p>
-    <img class="fig fig--line" src="assets/qual_rendering.jpg" alt="Three shapes: the input image, the ground-truth emission, and the four baselines' emission, rendered in a dark room.">
-  </section>
-
-  <section class="block wrap" id="download">
-    <p class="lead"><b>Download.</b> LightGenBench is openly available on <a href="https://huggingface.co/datasets/3dlg-hcvc/LightgenBench">Hugging Face</a>, split into 36,426 train, 200 validation and 200 test shapes.</p>
+  <section class="block" id="download">
+    <h2>Download</h2>
+    <p>LightGenBench is openly available on <a href="https://huggingface.co/datasets/3dlg-hcvc/LightgenBench">Hugging Face</a>, split into 36,426 train, 200 validation and 200 test shapes.</p>
     <div class="code">
       <button class="copy" data-copy="#dl">Copy</button>
       <pre id="dl">hf download 3dlg-hcvc/LightgenBench --repo-type dataset --local-dir lightgenbench</pre>
     </div>
   </section>
+
+  <section class="block" id="citation">
+    <h2>BibTeX</h2>
+    <!-- TODO(citation): fill in the venue and pages once the paper is public. -->
+    <div class="code">
+      <button class="copy" data-copy="#bib">Copy</button>
+      <pre id="bib">@inproceedings{lightgenbench2026,
+  title  = {LightGenBench: A Benchmark for 3D Emission Generation},
+  author = {Yang, Dongchen and Yan, Xingguang and Savva, Manolis},
+  year   = {2026}
+}</pre>
+    </div>
+  </section>
+
+  <section class="block" id="acknowledgements">
+    <h2>Acknowledgements</h2>
+    <!-- TODO(acknowledgements): placeholder; add at camera-ready. -->
+    <p>To be added.</p>
+  </section>
+
 </main>
 
 <footer class="wrap">
