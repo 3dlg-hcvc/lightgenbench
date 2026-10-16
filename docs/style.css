@@ -54,6 +54,10 @@ img { display: block; max-width: 100%; height: auto; }
 .fig { width: 100%; border-radius: var(--radius); cursor: zoom-in; }
 /* white paper diagrams stay white, framed as a card on the black page */
 .fig--card { background: #fff; padding: 14px; }
+/* a block with no sentence: keep the visual off the heading */
+.block > h2 + .video { margin-top: 16px; }
+.video { border-radius: var(--radius); overflow: hidden; background: var(--panel); line-height: 0; }
+.video video { width: 100%; height: auto; display: block; }
 
 /* emission off/on comparison: the "on" image underneath, the "off" image on top, clipped at --x */
 .cmp {
