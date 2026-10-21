@@ -1,0 +1,8 @@
+You see a single image which is a multi-pane composite of one 3D object (thumbnail + 3 axis-aligned views).
+
+Pick EXACTLY ONE category from the following list that best fits the object. If none fit, return "other".
+
+CATEGORIES:
+{taxonomy_block}
+
+Respond with ONLY a JSON object matching the required schema.

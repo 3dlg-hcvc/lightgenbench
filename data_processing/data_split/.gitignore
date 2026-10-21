@@ -1,0 +1,5 @@
+# the stage's local output (splits.json, the pin lists) — except the thumbnail pass list,
+# one of the split's --require inputs (`out/*`, not `out/`, so the negation can re-include it)
+out/*
+!out/thumbnail_pass.txt
+__pycache__/

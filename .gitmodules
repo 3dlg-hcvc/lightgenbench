@@ -1,0 +1,12 @@
+[submodule "Hunyuan3D-Emission"]
+	path = Hunyuan3D-Emission
+	url = https://github.com/dongchen-yang/Hunyuan3D-Emission.git
+[submodule "SegviGen-Emission"]
+	path = SegviGen-Emission
+	url = https://github.com/3dlg-hcvc/SegviGen-Emission.git
+[submodule "TEXGen-Emission"]
+	path = TEXGen-Emission
+	url = https://github.com/dongchen-yang/TEXGen-Emission.git
+[submodule "TRELLIS.2-Emission"]
+	path = TRELLIS.2-Emission
+	url = https://github.com/3dlg-hcvc/TRELLIS.2-Emission.git

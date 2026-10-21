@@ -1,0 +1,15 @@
+You are looking at a single image which is a 2x2 grid showing FOUR views of ONE 3D object:
+
+  top-left:     thumbnail
+  top-right:    rendered view from +x axis
+  bottom-left:  rendered view from -y axis
+  bottom-right: rendered view from +z axis
+
+All four panes show the SAME object. Identify the object and respond with:
+
+  category_freeform: a SHORT, SPECIFIC noun phrase (1-4 words) naming what kind of object this is.
+                     Use concrete categories such as "table lamp", "fantasy sword", "neon sign",
+                     "computer monitor", "candle holder". DO NOT use generic words such as
+                     "object", "thing", "item", "model", "decoration".
+
+Respond with ONLY a JSON object matching the required schema.

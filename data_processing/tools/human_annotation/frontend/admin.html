@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<base href="./">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emissive-74k Annotation — Admin</title>
+<link rel="stylesheet" href="static/style.css">
+<link rel="stylesheet" href="static/admin.css">
+</head>
+<body>
+<div id="admin">
+  <header class="adm-head">
+    <h1>Emissive-74k — annotation progress</h1>
+    <div class="adm-head-right">
+      <span id="refreshed" class="muted"></span>
+      <!-- The browser is the last card on a long page, so it is easy to miss entirely.
+           A button rather than an <a href="#browse-card">: the hash carries the page's
+           filter state, and an anchor would write a stray key into it. -->
+      <button id="goto-browse">↓ Browse all shapes</button>
+      <button id="refresh">↻ Refresh</button>
+      <a href="./" class="adm-link">← annotation tool</a>
+    </div>
+  </header>
+
+  <div id="error" class="adm-error" hidden></div>
+
+  <section class="adm-card">
+    <h2>Overall progress</h2>
+    <p class="adm-note">
+      The zero-emission auto-filter marked shapes verified without a human reviewing them,
+      so machine and human progress are counted separately rather than as one total.
+    </p>
+    <div id="tiles" class="adm-tiles"></div>
+    <div id="overall-bar"></div>
+  </section>
+
+  <section class="adm-card">
+    <h2>Effort remaining</h2>
+    <div id="projection"></div>
+  </section>
+
+  <section class="adm-card">
+    <h2>Decisions</h2>
+    <div class="adm-two">
+      <div>
+        <h3>Outcome</h3>
+        <div id="decisions"></div>
+      </div>
+      <div>
+        <h3>Reasons flagged</h3>
+        <div id="flags"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="adm-card">
+    <h2>Annotators</h2>
+    <p class="adm-note">
+      Names are shown exactly as they were typed — nothing is merged. A name that looks like
+      another person's is flagged, not rewritten.
+    </p>
+    <div class="adm-scroll">
+      <table id="annotators" class="adm-table">
+        <thead><tr>
+          <th data-sort="display">Annotator</th>
+          <th data-sort="items" class="num">Items</th>
+          <th data-sort="good" class="num">✓ no issue</th>
+          <th data-sort="issue" class="num">✗ has issue</th>
+          <th data-sort="sessions" class="num">Sessions</th>
+          <th data-sort="active_seconds" class="num">Active time</th>
+          <th data-sort="items_per_hour" class="num">Items/hr</th>
+          <th data-sort="last_ts">Last activity</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="adm-card" id="detail-card" hidden>
+    <h2>Annotator detail — <span id="detail-name"></span></h2>
+    <div id="detail"></div>
+  </section>
+
+  <section class="adm-card">
+    <h2>Activity per day</h2>
+    <p class="adm-note">
+      Shown as two charts with independent scales — the auto-filter ran as a single bulk pass,
+      and plotting it against the human pass on one axis would flatten the human bars to nothing.
+    </p>
+    <div id="activity"></div>
+  </section>
+
+  <section class="adm-card">
+    <h2>Progress by category</h2>
+    <p class="adm-note">Ordered by how much is left, so the biggest remaining buckets sit at the top.</p>
+    <div class="adm-scroll tall">
+      <table id="categories" class="adm-table">
+        <thead><tr>
+          <th>Category</th>
+          <th class="num">Total</th>
+          <th class="num">Human</th>
+          <th class="num">Auto</th>
+          <th class="num">Remaining</th>
+          <th class="bar-col">Progress</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="adm-card" id="browse-card">
+    <h2>Browse all shapes</h2>
+    <p class="adm-note">
+      The annotation tool only ever shows an annotator their own claimed batch, so this is
+      the only view of the whole cohort. Read-only: correcting a decision still means going
+      through the annotation tool. Click a card for every render of that shape.
+    </p>
+    <div class="bfilters">
+      <label>Status
+        <select id="b-status"></select>
+      </label>
+      <label>Category
+        <select id="b-bucket"></select>
+      </label>
+      <label>Reason flagged
+        <select id="b-flag"></select>
+      </label>
+      <label>Annotator
+        <select id="b-annotator"></select>
+      </label>
+      <label>Show
+        <select id="b-view"></select>
+      </label>
+      <label>Order
+        <select id="b-order">
+          <option value="uuid">by uuid</option>
+          <option value="recent">most recently annotated</option>
+        </select>
+      </label>
+      <label>uuid contains
+        <input type="search" id="b-q" placeholder="paste or type part of a uuid">
+      </label>
+      <label class="bcheck">
+        <input type="checkbox" id="b-claimed"> currently claimed only
+      </label>
+    </div>
+    <div class="bpager">
+      <button id="b-prev">← previous</button>
+      <span id="b-range" class="dim"></span>
+      <button id="b-next">next →</button>
+      <select id="b-limit">
+        <option value="24">24 per page</option>
+        <option value="48" selected>48 per page</option>
+        <option value="96">96 per page</option>
+      </select>
+      <button id="b-reset">reset filters</button>
+    </div>
+    <div id="b-grid" class="bgrid"></div>
+  </section>
+</div>
+
+<!-- Every render of one shape, opened from a browse card. Read-only, like the rest of
+     the dashboard: the Sketchfab link opens the source model in a new tab rather than
+     embedding a WebGL viewer the way the annotation tool does. -->
+<div id="lb" class="lb" hidden>
+  <div class="lb-panel" role="dialog" aria-modal="true" aria-label="Shape detail">
+    <div class="lb-head">
+      <span id="lb-uuid" class="mono"></span>
+      <span id="lb-badges"></span>
+      <a id="lb-sf" class="adm-link" target="_blank" rel="noopener">⬡ Sketchfab ↗</a>
+      <span class="lb-spacer"></span>
+      <span id="lb-pos" class="dim"></span>
+      <button id="lb-prev" title="previous shape (←)">←</button>
+      <button id="lb-next" title="next shape (→)">→</button>
+      <button id="lb-close" title="close (Esc)">✕</button>
+    </div>
+    <div id="lb-grid" class="lb-grid"></div>
+    <div id="lb-meta" class="lb-meta"></div>
+  </div>
+</div>
+<div id="tip" class="adm-tip" hidden></div>
+<script src="static/admin.js"></script>
+</body>
+</html>

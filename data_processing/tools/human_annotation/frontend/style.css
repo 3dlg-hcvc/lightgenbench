@@ -1,0 +1,220 @@
+* { box-sizing: border-box; }
+/* The app is exactly one screen — header, the shape, the pager — and nothing scrolls.
+   Paging is the only movement, so the decision buttons never leave the same spot and
+   the shape gets every pixel that is left over. */
+html, body { height: 100%; }
+body { font-family: system-ui, Arial, sans-serif; margin: 0; background: #f4f5f7;
+  overflow: hidden; }
+#layout { display: flex; flex-direction: column; height: 100vh; }
+#topbar { flex: 0 0 auto; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  padding: 7px 14px; background: #fff; border-bottom: 1px solid #ddd; font-size: 13px; }
+.tb-title { font-weight: 700; font-size: 14px; }
+.tb-item { display: flex; align-items: center; gap: 5px; }
+.tb-batch { font-size: 12px; color: #555; font-variant-numeric: tabular-nums; }
+.tb-spacer { flex: 1; }
+#topbar button { font-size: 13px; padding: 3px 8px; cursor: pointer; }
+#topbar .claim-btn { width: auto; }
+/* filters and uuid search: needed rarely, so they sit behind ⚙ rather than taking
+   permanent space away from the shape */
+#tools { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 7px 14px; background: #fbfbfc; border-bottom: 1px solid #e3e3e3; font-size: 13px; }
+#tools[hidden] { display: none; }
+#tools select, #tools input, #tools button { font-size: 13px; padding: 3px 6px; }
+.muted { color: #999; font-size: 11px; }
+/* The column is sized off the available HEIGHT, not the window width: the four renders
+   are square, so on a wide monitor a width-driven card stretches them into letterboxed
+   strips with the real pixels unused. */
+#grid { flex: 1; min-height: 0; display: grid;
+  grid-template-columns: minmax(0, min(96vw, calc(100vh - 190px)));
+  justify-content: center; padding: 10px; }
+#pager { flex: 0 0 auto; display: flex; align-items: center; justify-content: center;
+  gap: 18px; padding: 6px 14px; background: #fff; border-top: 1px solid #ddd; }
+#pager button { font-size: 17px; padding: 2px 24px; cursor: pointer; border: 1px solid #ccc;
+  border-radius: 5px; background: #f7f7f8; }
+#pager button:hover { background: #eee; }
+#pager #page-info { font-size: 13px; color: #555; font-variant-numeric: tabular-nums;
+  min-width: 130px; text-align: center; }
+.card { background: #fff; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,.12);
+  padding: 8px; border: 2px solid transparent;
+  height: 100%; display: flex; flex-direction: column; min-height: 0; }
+.card.is-emissive { border-color: #2e9e4f; }
+.card.not-emissive { border-color: #c0392b; }
+.decision { gap: 8px; }
+button.dec { padding: 5px 12px; border: 1px solid #ccc; border-radius: 5px;
+  background: #f7f7f8; cursor: pointer; font-size: 13px; }
+button.dec:hover { background: #eee; }
+button.dec.em.active { background: #2e9e4f; border-color: #2e9e4f; color: #fff; }
+button.dec.no.active { background: #c0392b; border-color: #c0392b; color: #fff; }
+.reasons, .styles { gap: 6px; }
+.why-lbl { font-size: 12px; color: #999; }
+button.reason, button.style-btn { padding: 3px 8px; border: 1px solid #ccc; border-radius: 4px;
+  background: #fafafa; cursor: pointer; font-size: 12px; }
+button.reason:hover, button.style-btn:hover { background: #eee; }
+button.reason.active { background: #c0392b; border-color: #c0392b; color: #fff; }
+button.style-btn.active { background: #2e9e4f; border-color: #2e9e4f; color: #fff; }
+.complete-lbl { display: flex; align-items: flex-start; gap: 6px; font-size: 12px; color: #444;
+  cursor: pointer; line-height: 1.35; }
+.complete-lbl input { margin-top: 2px; flex: 0 0 auto; }
+/* The images take whatever the card has left after its header and decision controls,
+   so they grow on a tall screen and shrink when "has issue" opens the reason row —
+   instead of a fixed height that has to assume the worst case and waste the rest. */
+/* `grid-template-rows: 1fr 1fr` is load-bearing: with the default `auto` the two rows
+   size to their content, the figures have no height for the images to flex against, and
+   the block outgrows the card — pushing the decision buttons off the bottom of the
+   screen. Fixed rows give the images a definite box to fill. */
+.imgs { display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: 1fr 1fr;
+  gap: 4px; flex: 1; min-height: 0; }
+.imgs figure { margin: 0; text-align: center; font-size: 10px; color: #777;
+  display: flex; flex-direction: column; min-height: 0; }
+.imgs img { width: 100%; flex: 1; min-height: 0; object-fit: contain; background: #eee;
+  border-radius: 4px; }
+/* header button, not a grid cell: a fifth cell forced a third row and pushed
+   the decision controls below the fold */
+.more-btn { flex: 0 0 auto; font-size: 11px; font-weight: 600; padding: 2px 8px;
+  border: 1px solid #ccc; border-radius: 5px; background: #fafafa; color: #555;
+  cursor: pointer; white-space: nowrap; }
+.more-btn:hover { background: #eef; border-color: #88a; color: #224; }
+.viewer-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.9);
+  z-index: 1000; overflow: auto; padding: 24px; }
+.viewer-overlay.show { display: block; }
+.viewer-close { position: fixed; top: 12px; right: 22px; background: none; border: none;
+  color: #fff; font-size: 34px; line-height: 1; cursor: pointer; z-index: 1001; }
+.viewer-close:hover { color: #ccc; }
+.viewer-content { max-width: 1100px; margin: 0 auto; }
+.viewer-title { color: #fff; font: 12px monospace; text-align: center; margin-bottom: 16px;
+  word-break: break-all; }
+.viewer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+.viewer-grid figure { margin: 0; text-align: center; color: #bbb; font-size: 12px; }
+.viewer-grid img { width: 100%; height: 320px; object-fit: contain; background: #111; border-radius: 6px; }
+#open-guide { font-size: 11px; padding: 1px 6px; cursor: pointer; margin-left: 6px; }
+.viewer-content.guide { max-width: 760px; background: #fff; color: #222; border-radius: 8px;
+  padding: 22px 32px; line-height: 1.55; font-size: 14px; }
+.viewer-content.guide h1 { font-size: 22px; margin: 0 0 12px; }
+.viewer-content.guide h2 { font-size: 17px; margin: 22px 0 8px; border-bottom: 1px solid #eee; padding-bottom: 4px; }
+.viewer-content.guide h3, .viewer-content.guide h4 { font-size: 15px; margin: 16px 0 6px; }
+.viewer-content.guide p { margin: 8px 0; }
+.viewer-content.guide ul, .viewer-content.guide ol { margin: 8px 0; padding-left: 22px; }
+.viewer-content.guide li { margin: 4px 0; }
+.viewer-content.guide code { background: #f0f1f3; padding: 1px 5px; border-radius: 4px;
+  font-size: 13px; font-family: ui-monospace, Menlo, Consolas, monospace; }
+.viewer-content.guide a { color: #2d6cdf; }
+/* Screenshots. These are full browser captures shrunk to the guide's column, so the red
+   callouts on them get small — clicking opens the original size in a new tab, which is
+   what `cursor: zoom-in` is promising. `display:block` drops the inline baseline gap
+   that would otherwise show as a seam under each one. */
+.viewer-content.guide img { display: block; width: 100%; height: auto; margin: 10px 0 4px;
+  border: 1px solid #dfe1e5; border-radius: 6px; cursor: zoom-in;
+  background: #fafbfc; }
+.viewer-content.guide img:hover { border-color: #9fbdf0; }
+.card .uuid-row { display: flex; align-items: center; gap: 8px; }
+.card .uuid { font: 11px monospace; color: #888; word-break: break-all; flex: 1; min-width: 0; }
+.card .sf-btn { flex: 0 0 auto; font-size: 11px; font-weight: 600; padding: 2px 8px;
+  border: 1px solid #cdd6e6; border-radius: 5px; background: #f3f6fc; color: #2d6cdf;
+  cursor: pointer; white-space: nowrap; }
+.card .sf-btn:hover { background: #e7f0ff; border-color: #9fbdf0; }
+.card .sf-btn[aria-expanded="true"] { background: #2d6cdf; border-color: #2d6cdf; color: #fff; }
+/* single floating Sketchfab embed (mounted on click, torn down on close) */
+#sf-panel { position: fixed; right: 14px; bottom: 14px; width: min(560px, 46vw);
+  height: min(440px, 58vh); background: #0d0d0d; border: 1px solid #2a2a2a; border-radius: 10px;
+  overflow: hidden; z-index: 1100; box-shadow: 0 12px 40px rgba(0,0,0,.45);
+  display: flex; flex-direction: column; resize: both; }
+#sf-panel .sf-head { display: flex; align-items: center; gap: 10px; padding: 6px 10px;
+  background: #161616; border-bottom: 1px solid #262626; font: 11px ui-monospace, Menlo, monospace;
+  color: #aaa; }
+#sf-panel .sf-head a { color: #8cf; text-decoration: none; margin-left: auto; }
+#sf-panel .sf-head a:hover { text-decoration: underline; }
+#sf-panel .sf-head button { background: none; border: none; color: #888; font-size: 15px;
+  cursor: pointer; line-height: 1; padding: 0 2px; }
+#sf-panel .sf-head button:hover { color: #fff; }
+#sf-panel iframe { flex: 1; width: 100%; border: none; background: #0d0d0d; }
+.row { display: flex; gap: 6px; align-items: center; margin-top: 6px; flex-wrap: wrap; }
+.flags label { font-size: 12px; margin-right: 8px; white-space: nowrap; }
+.saved { color: #2e9e4f; font-size: 11px; }
+/* A refused save has to look nothing like a successful one — it is the only sign the
+   annotator gets that the decision they just made was not recorded. */
+.saved.save-failed { color: #c0392b; font-weight: 600; }
+/* free-form note on a "has issue" card */
+.notes-box { width: 100%; font: 12px system-ui, sans-serif; padding: 5px 7px; resize: vertical;
+  border: 1px solid #ccc; border-radius: 4px; }
+/* hover "more" preview — a small floating 2x2 panel, no full-page backdrop */
+#preview { display: none; position: fixed; z-index: 900; background: #fff; border: 1px solid #ccc;
+  border-radius: 8px; box-shadow: 0 6px 24px rgba(0,0,0,.25); padding: 8px; }
+.preview-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; width: 520px; }
+.preview-grid figure { margin: 0; text-align: center; font-size: 10px; color: #777; }
+.preview-grid img { width: 100%; height: 200px; object-fit: contain; background: #111; border-radius: 4px; }
+#grid > .card { transition: filter .15s ease; }
+
+/* annotation gate: the card controls stay locked until an annotator name is set */
+.gate-banner { margin: 4px 0 2px; padding: 6px 8px; background: #fdecea; border: 1px solid #e0a3a3;
+  border-radius: 4px; font-size: 12px; line-height: 1.3; color: #8a1f1f; font-weight: 600; }
+/* Blur + disable the CARDS while locked, so they read as clearly unavailable. The sidebar
+   (name / filters / guide) stays sharp and usable; the per-card JS handlers also
+   early-return when locked. Scoped to `.card` rather than all of #grid because the
+   empty-state notice lives in #grid too, and blurring the instruction that tells you how
+   to unlock the page — along with the claim button in it — defeats the point. */
+body.annotation-locked #grid > .card {
+  filter: blur(4px);
+  pointer-events: none;
+  user-select: none;
+}
+/* Before a batch is claimed the grid is empty by design — see app.js load(). Centred in
+   the single grid column so it reads as the page's subject, not as a lost caption. */
+.grid-empty { display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 14px; height: 100%; padding: 24px;
+  color: #555; font-size: 14px; text-align: center; }
+.grid-empty p { margin: 0; max-width: 380px; line-height: 1.5; }
+.grid-empty .empty-claim { width: auto; padding: 7px 18px; font-size: 14px; }
+.claim-btn { width: 100%; font-size: 13px; padding: 4px 6px; cursor: pointer;
+  border: 1px solid #cdd6e6; border-radius: 5px; background: #f3f6fc; color: #2d6cdf;
+  font-weight: 600; }
+.claim-btn:hover { background: #e7f0ff; border-color: #9fbdf0; }
+
+/* claim panel — replaces two native prompt()s. The category one printed 40 names as a
+   single comma-separated line and expected one typed back exactly. */
+.claim-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 1200;
+  display: flex; align-items: center; justify-content: center; padding: 20px; }
+.claim-overlay[hidden] { display: none; }
+.claim-box { background: #fff; border-radius: 10px; width: min(470px, 100%);
+  max-height: min(700px, 92vh); display: flex; flex-direction: column;
+  box-shadow: 0 16px 48px rgba(0,0,0,.3); }
+.claim-head { display: flex; align-items: center; padding: 12px 16px;
+  border-bottom: 1px solid #e6e6e6; font-weight: 700; font-size: 15px; }
+.claim-head button { margin-left: auto; background: none; border: none; font-size: 22px;
+  line-height: 1; color: #999; cursor: pointer; padding: 0 2px; }
+.claim-head button:hover { color: #333; }
+.claim-section { padding: 12px 16px; border-bottom: 1px solid #f0f0f0; }
+.claim-section.claim-cats { flex: 1; min-height: 0; display: flex; flex-direction: column;
+  border-bottom: none; }
+.claim-lbl { font-size: 12px; color: #555; margin-bottom: 7px; font-weight: 600; }
+.claim-counts { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.count-btn { padding: 5px 13px; border: 1px solid #ccc; border-radius: 5px; background: #fafafa;
+  cursor: pointer; font-size: 13px; font-variant-numeric: tabular-nums; }
+.count-btn:hover { background: #eee; }
+.count-btn.active { background: #2d6cdf; border-color: #2d6cdf; color: #fff; font-weight: 600; }
+.count-custom { width: 80px; font-size: 13px; padding: 4px 6px; border: 1px solid #ccc;
+  border-radius: 5px; }
+#claim-search { width: 100%; font-size: 13px; padding: 5px 8px; border: 1px solid #ccc;
+  border-radius: 5px; margin-bottom: 6px; }
+.claim-cat-list { flex: 1; overflow-y: auto; min-height: 130px; border: 1px solid #eee;
+  border-radius: 6px; }
+.claim-cat { display: flex; align-items: center; gap: 8px; padding: 5px 9px; font-size: 13px;
+  cursor: pointer; border-bottom: 1px solid #f5f5f5; }
+.claim-cat:hover { background: #f4f7fd; }
+.claim-cat.empty { color: #bbb; cursor: default; }
+.claim-cat-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.claim-cat-n { color: #888; font-size: 11px; font-variant-numeric: tabular-nums; flex: 0 0 auto; }
+.claim-foot { display: flex; align-items: center; gap: 8px; padding: 12px 16px;
+  border-top: 1px solid #e6e6e6; }
+.claim-summary { flex: 1; font-size: 12px; color: #555; line-height: 1.3;
+  font-variant-numeric: tabular-nums; }
+.claim-foot button { padding: 6px 14px; border: 1px solid #ccc; border-radius: 5px;
+  background: #f7f7f8; cursor: pointer; font-size: 13px; }
+.claim-foot button:hover { background: #eee; }
+.claim-foot .claim-go { background: #2d6cdf; border-color: #2d6cdf; color: #fff; font-weight: 600; }
+.claim-foot .claim-go:hover { background: #245ec4; }
+.claim-foot .claim-go:disabled { background: #c8d3e8; border-color: #c8d3e8; cursor: default; }
+
+/* ⚙ reads as pressed while the filter row is open */
+#topbar #toggle-tools.active { background: #e7f0ff; border-color: #9fbdf0; color: #2d6cdf; }
+/* the gate banner is a row of the page column now, not a sidebar child */
+#layout > .gate-banner { flex: 0 0 auto; margin: 6px 14px 0; }

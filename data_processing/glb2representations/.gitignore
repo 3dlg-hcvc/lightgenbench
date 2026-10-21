@@ -1,0 +1,16 @@
+# the stage's local output — except the result lists and the recorded run's bookkeeping
+# (`out/*`, not `out/`: git does not descend into an ignored directory, so a negation under
+# `out/` would never re-include anything)
+out/*
+!out/bake_pass.txt
+!out/views_complete.txt
+!out/views_missing.txt
+!out/runs/
+out/runs/*
+!out/runs/20260909-053905/
+out/runs/20260909-053905/*
+!out/runs/20260909-053905/run.json
+!out/runs/20260909-053905/jobs.txt
+!out/runs/20260909-053905/unattempted.txt
+!out/runs/20260909-053905/no_verdict.txt
+__pycache__/

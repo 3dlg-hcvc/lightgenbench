@@ -1,0 +1,6 @@
+out/
+
+# generated outputs (do NOT commit; out_full/ holds the category records, written by paid API
+# calls: never delete it; the rest regenerate)
+out_*/
+debug_*/

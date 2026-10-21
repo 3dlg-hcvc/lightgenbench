@@ -1,0 +1,241 @@
+/* Admin dashboard. Extends style.css (loaded first) — same surfaces, ink and radii as
+   the annotator UI so the two read as one tool.
+
+   Series colors are validated, not chosen by eye: --c-human vs --c-auto sit at OKLab
+   dE 31.2 under protanopia / 35.2 at normal vision, and both clear dE 15 against the
+   app's existing green and red so nothing on the page collides. --c-auto lands just
+   under 3:1 on white, which is why every segment carries a visible label and the same
+   numbers are repeated in tables. */
+:root {
+  --c-human: #2d6cdf;
+  --c-auto: #ca8a04;
+  --c-remaining: #dfe1e6;   /* unfilled track, not a data series */
+  --c-good: #2e9e4f;
+  --c-issue: #c0392b;
+  --ink: #1c1e21;
+  --ink-2: #555;
+  --ink-3: #888;
+  --rule: #e3e3e3;
+}
+
+/* style.css pins the ANNOTATOR page to one non-scrolling screen — `html, body { height:
+   100% }` + `body { overflow: hidden }`. The
+   dashboard loads that same stylesheet but is a long document, so it must opt back out.
+   Without this everything below the first viewport — the activity charts, the category
+   table, the shape browser — is unreachable, and the page just looks like it has nothing
+   more on it. Keep this rule ahead of any future admin layout work. */
+html, body { height: auto; overflow: visible; }
+
+#admin { max-width: 1180px; margin: 0 auto; padding: 16px; color: var(--ink); }
+
+.adm-head { display: flex; align-items: baseline; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+.adm-head h1 { font-size: 19px; margin: 0; }
+.adm-head-right { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+.adm-head button { font-size: 13px; padding: 3px 8px; cursor: pointer; }
+.adm-link { color: var(--c-human); text-decoration: none; }
+.adm-link:hover { text-decoration: underline; }
+
+.adm-card { background: #fff; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,.12);
+  padding: 14px 16px; margin-bottom: 14px; }
+.adm-card h2 { font-size: 15px; margin: 0 0 4px; }
+.adm-card h3 { font-size: 13px; margin: 0 0 8px; color: var(--ink-2); font-weight: 600; }
+.adm-note { font-size: 12px; color: var(--ink-3); margin: 0 0 12px; line-height: 1.5; }
+.adm-two { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+.adm-error { background: #fdecea; border: 1px solid var(--c-issue); color: #8a2620;
+  padding: 10px 12px; border-radius: 6px; margin-bottom: 14px; font-size: 13px; }
+
+/* stat tiles ------------------------------------------------------------------ */
+.adm-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px; margin-bottom: 16px; }
+.tile { border: 1px solid var(--rule); border-radius: 6px; padding: 10px 12px;
+  border-left: 3px solid var(--c-remaining); }
+.tile.human { border-left-color: var(--c-human); }
+.tile.auto { border-left-color: var(--c-auto); }
+.tile-label { font-size: 11px; color: var(--ink-3); text-transform: uppercase;
+  letter-spacing: .04em; }
+.tile-value { font-size: 24px; font-weight: 650; font-variant-numeric: tabular-nums;
+  line-height: 1.25; }
+.tile-sub { font-size: 11px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+
+/* stacked progress bar -------------------------------------------------------- */
+/* 2px surface gaps between segments (skill mark spec) — the track shows through, so
+   adjacent fills never touch even when two segments share a hue family. */
+.stack { display: flex; height: 26px; background: var(--c-remaining); border-radius: 4px;
+  overflow: hidden; gap: 2px; }
+/* A non-zero segment never collapses to nothing: the human share is 0.26% of the cohort,
+   which is sub-pixel at any sane width. 3px slightly overstates the smallest slices, but
+   a segment that renders as literally zero pixels reads as "none", which is worse — and
+   the exact counts sit in the legend and tiles right beside the bar. */
+.stack .seg { min-width: 3px; display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 11px; font-variant-numeric: tabular-nums; white-space: nowrap;
+  cursor: default; }
+.stack .seg:first-child { border-radius: 4px 0 0 4px; }
+.stack .seg:last-child { border-radius: 0 4px 4px 0; }
+.stack .seg.human { background: var(--c-human); }
+.stack .seg.auto { background: var(--c-auto); }
+.stack .seg.remaining { background: transparent; color: var(--ink-2); }
+
+.legend { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 10px; font-size: 12px; }
+.legend-item { display: flex; align-items: center; gap: 6px; color: var(--ink-2); }
+.swatch { width: 10px; height: 10px; border-radius: 2px; flex: 0 0 auto; }
+.swatch.human { background: var(--c-human); }
+.swatch.auto { background: var(--c-auto); }
+.swatch.remaining { background: var(--c-remaining); border: 1px solid #c4c7cd; }
+.legend-num { font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 600; }
+
+/* projection ------------------------------------------------------------------ */
+.proj { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.proj-value { font-size: 28px; font-weight: 650; font-variant-numeric: tabular-nums; }
+.proj-unit { font-size: 14px; color: var(--ink-2); }
+.proj-caveat { font-size: 12px; color: var(--ink-3); margin-top: 8px; line-height: 1.5; }
+
+/* labelled horizontal bars (decisions, flags) --------------------------------- */
+.hbar { display: grid; grid-template-columns: minmax(90px, auto) 1fr auto; gap: 8px;
+  align-items: center; margin-bottom: 6px; font-size: 12px; }
+.hbar-label { color: var(--ink-2); white-space: nowrap; }
+.hbar-track { background: #f0f1f3; border-radius: 4px; height: 12px; overflow: hidden; }
+.hbar-fill { height: 100%; border-radius: 4px; background: var(--c-human); min-width: 3px; }
+.hbar-fill.good { background: var(--c-good); }
+.hbar-fill.issue { background: var(--c-issue); }
+.hbar-fill.todo { background: #b9bdc4; }
+.hbar-fill.auto { background: var(--c-auto); }
+.hbar-value { font-variant-numeric: tabular-nums; color: var(--ink); min-width: 52px;
+  text-align: right; }
+
+/* tables ---------------------------------------------------------------------- */
+.adm-scroll { overflow-x: auto; }
+/* 107 categories would otherwise push everything else off the page */
+.adm-scroll.tall { max-height: 420px; overflow-y: auto; }
+.adm-scroll.tall thead th { position: sticky; top: 0; background: #fff; z-index: 1; }
+.adm-table { border-collapse: collapse; width: 100%; font-size: 13px; }
+.adm-table th, .adm-table td { padding: 6px 10px; text-align: left; border-bottom: 1px solid #eee;
+  white-space: nowrap; }
+.adm-table th { font-size: 11px; text-transform: uppercase; letter-spacing: .04em;
+  color: var(--ink-3); font-weight: 600; border-bottom: 1px solid var(--rule); }
+.adm-table th[data-sort] { cursor: pointer; user-select: none; }
+.adm-table th[data-sort]:hover { color: var(--ink); }
+.adm-table th.sorted::after { content: " ▾"; }
+.adm-table th.sorted.asc::after { content: " ▴"; }
+.adm-table td.num, .adm-table th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.adm-table tbody tr.clickable { cursor: pointer; }
+.adm-table tbody tr.clickable:hover { background: #f0f1f3; }
+.adm-table tbody tr.selected { background: #e7f0ff; }
+.adm-table tr.is-auto td { color: var(--ink-3); font-style: italic; }
+.bar-col { width: 200px; min-width: 200px; }
+.adm-table .stack { height: 12px; }
+.adm-table .stack .seg { font-size: 0; }
+
+.badge { display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: 9px;
+  margin-left: 6px; white-space: nowrap; vertical-align: middle; }
+.badge.warn { background: #fff3d6; color: #8a5a00; border: 1px solid #e8c46a; }
+.badge.dup { background: #eee9ff; color: #4c3a9e; border: 1px solid #c3b6f5; }
+.badge.auto { background: #fdf3d4; color: #7a5a04; border: 1px solid #e3c96a; }
+.badge.stale { background: #f1f2f4; color: #666; border: 1px solid #d3d6db; }
+/* decision badges: their own hues, because amber already means "the machine did it" */
+.badge.good { background: #e6f4ea; color: #1e6b36; border: 1px solid #9ed4b1; }
+.badge.issue { background: #fdecea; color: #8a2620; border: 1px solid #eda79f; }
+.badge.todo { background: #f1f2f4; color: #555; border: 1px solid #d3d6db; }
+
+.mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; }
+.dim { color: var(--ink-3); }
+
+/* activity charts ------------------------------------------------------------- */
+.chart { margin-bottom: 18px; }
+.chart-title { font-size: 12px; color: var(--ink-2); margin-bottom: 2px; }
+.chart-max { font-size: 11px; color: var(--ink-3); margin-bottom: 6px;
+  font-variant-numeric: tabular-nums; }
+.bars { display: flex; align-items: flex-end; gap: 3px; height: 90px;
+  border-bottom: 1px solid var(--rule); padding-bottom: 0; }
+/* Capped so a sparse week doesn't render as a few enormous slabs — only days that saw
+   activity exist as bars, and there can be as few as one. */
+.bars .bar { flex: 1 1 0; min-width: 3px; max-width: 46px; border-radius: 4px 4px 0 0;
+  cursor: default; min-height: 2px; }
+.bars .bar.human { background: var(--c-human); }
+.bars .bar.auto { background: var(--c-auto); }
+.bars .bar:hover { opacity: .75; }
+.chart-axis { display: flex; justify-content: space-between; font-size: 10px;
+  color: var(--ink-3); margin-top: 4px; }
+
+/* detail ---------------------------------------------------------------------- */
+.detail-sub { font-size: 12px; color: var(--ink-2); margin: 14px 0 6px; font-weight: 600; }
+.empty { font-size: 12px; color: var(--ink-3); padding: 6px 0; }
+.pager-row { display: flex; gap: 8px; align-items: center; margin-top: 8px; font-size: 12px; }
+.pager-row button { font-size: 12px; padding: 2px 8px; cursor: pointer; }
+.pager-row button[disabled] { opacity: .4; cursor: default; }
+
+/* tooltip --------------------------------------------------------------------- */
+.adm-tip { position: fixed; z-index: 50; background: #1c1e21; color: #fff; font-size: 11px;
+  padding: 5px 8px; border-radius: 4px; pointer-events: none; white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25); font-variant-numeric: tabular-nums; }
+
+/* browse all shapes ----------------------------------------------------------- */
+.bfilters { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: flex-end;
+  margin-bottom: 10px; }
+.bfilters label { display: flex; flex-direction: column; gap: 3px; font-size: 11px;
+  text-transform: uppercase; letter-spacing: .04em; color: var(--ink-3); font-weight: 600; }
+.bfilters select, .bfilters input[type="search"] { font: inherit; font-size: 13px;
+  text-transform: none; letter-spacing: 0; color: var(--ink); padding: 3px 6px;
+  border: 1px solid var(--rule); border-radius: 4px; background: #fff; max-width: 230px; }
+.bfilters input[type="search"] { min-width: 190px; }
+.bfilters label.bcheck { flex-direction: row; align-items: center; gap: 5px;
+  padding-bottom: 5px; }
+
+.bpager { display: flex; gap: 8px; align-items: center; font-size: 12px;
+  margin-bottom: 10px; flex-wrap: wrap; }
+.bpager button { font-size: 12px; padding: 2px 8px; cursor: pointer; }
+.bpager button[disabled] { opacity: .4; cursor: default; }
+.bpager select { font-size: 12px; padding: 2px 4px; }
+.bpager #b-range { font-variant-numeric: tabular-nums; }
+
+/* auto-fill, not auto-fit: a 3-shape result keeps card-sized cards instead of
+   stretching three of them across the full width. */
+.bgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+  gap: 10px; }
+.bgrid.loading { opacity: .45; }
+.bcard { border: 1px solid var(--rule); border-radius: 6px; padding: 6px; cursor: pointer;
+  background: #fff; border-left-width: 3px; }
+.bcard:hover, .bcard:focus-visible { box-shadow: 0 1px 6px rgba(0,0,0,.16); outline: none; }
+.bcard:focus-visible { border-color: var(--c-human); }
+/* The decision is carried by the left edge AND repeated as text below it — the browser is
+   used to spot mis-annotation, so a colour-only signal would be the wrong place to rely
+   on hue alone. */
+.bcard.good { border-left-color: var(--c-good); }
+.bcard.issue { border-left-color: var(--c-issue); }
+.bcard.todo { border-left-color: var(--c-remaining); }
+
+/* Renders are square; a fixed aspect box keeps the rows aligned whatever loads. */
+.bshot { position: relative; aspect-ratio: 1 / 1; background: #f4f5f7; border-radius: 4px;
+  overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.bshot img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.bshot.missing { background: repeating-linear-gradient(45deg, #f4f5f7, #f4f5f7 6px,
+  #ecedf0 6px, #ecedf0 12px); }
+.bnone { font-size: 10px; color: var(--ink-3); }
+.bcap { position: absolute; left: 0; right: 0; bottom: 0; font-size: 10px; color: #fff;
+  background: rgba(0,0,0,.55); padding: 2px 5px; text-align: center; }
+.bline { display: flex; align-items: center; gap: 4px; margin-top: 5px; flex-wrap: wrap; }
+.bline .badge { margin-left: 0; }
+.bmeta { font-size: 11px; color: var(--ink-2); margin-top: 2px; line-height: 1.35;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* lightbox -------------------------------------------------------------------- */
+.lb { position: fixed; inset: 0; z-index: 60; background: rgba(20,22,25,.72);
+  display: flex; align-items: center; justify-content: center; padding: 20px; }
+.lb[hidden] { display: none; }
+.lb-panel { background: #fff; border-radius: 8px; padding: 12px 14px; width: min(1000px, 96vw);
+  max-height: 92vh; overflow-y: auto; box-shadow: 0 6px 30px rgba(0,0,0,.35); }
+.lb-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+.lb-head button { font-size: 13px; padding: 2px 8px; cursor: pointer; }
+.lb-head button[disabled] { opacity: .4; cursor: default; }
+.lb-spacer { flex: 1 1 auto; }
+.lb-head .badge { margin-left: 0; }
+/* 240px lands on 3 columns in the 1000px panel, so the six views fill two even rows
+   instead of leaving a 4+2 gap. */
+.lb-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 8px; }
+.lb-grid .bshot { background: #f4f5f7; }
+.lb-meta { margin-top: 12px; display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2px 18px; }
+.lb-row { display: flex; gap: 8px; font-size: 12px; padding: 3px 0;
+  border-bottom: 1px solid #f0f0f0; }
+.lb-key { color: var(--ink-3); min-width: 108px; }
+.lb-val { color: var(--ink); white-space: pre-wrap; word-break: break-word; }

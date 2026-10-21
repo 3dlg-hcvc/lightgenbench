@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<base href="./">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emissive-74k Annotation</title>
+<link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+<div id="layout">
+  <header id="topbar">
+    <span class="tb-title">Emissive-74k</span>
+    <span class="tb-item">annotator: <b id="annotator-name">?</b>
+      <button id="set-annotator">set</button></span>
+    <span id="share-info" class="tb-batch"></span>
+    <button id="claim-btn" class="claim-btn">＋ claim a batch</button>
+    <span class="tb-spacer"></span>
+    <span id="progress" class="muted">…</span>
+    <button id="toggle-tools" title="filters and uuid search">⚙</button>
+    <button id="open-guide" title="how to use this tool">❓ Guide</button>
+  </header>
+  <div id="tools" hidden>
+    <select id="f-status">
+      <option value="todo" selected>to-do</option>
+      <option value="emissive">good</option>
+      <option value="not_emissive">has issue</option>
+      <option value="finished">finished</option>
+      <option value="auto_zero">auto: zero-emission</option>
+      <option value="all">all</option>
+    </select>
+    <input id="f-q" placeholder="uuid…">
+    <button id="apply">go</button>
+  </div>
+  <div id="gate-banner" class="gate-banner" hidden></div>
+  <main id="grid"></main>
+  <footer id="pager">
+    <button id="prev" title="previous shape (←)">←</button>
+    <span id="page-info"></span>
+    <button id="next" title="next shape (→)">→</button>
+  </footer>
+</div>
+<div id="viewer" class="viewer-overlay">
+  <button id="viewer-close" class="viewer-close">&times;</button>
+  <div id="viewer-content" class="viewer-content"></div>
+</div>
+<div id="preview"></div>
+<div id="claim-panel" class="claim-overlay" hidden>
+  <div class="claim-box" role="dialog" aria-modal="true" aria-labelledby="claim-title">
+    <div class="claim-head">
+      <span id="claim-title">Claim a batch</span>
+      <button id="claim-close" type="button" title="close">&times;</button>
+    </div>
+    <div class="claim-section">
+      <div class="claim-lbl">How many shapes?</div>
+      <div id="claim-counts" class="claim-counts"></div>
+    </div>
+    <div class="claim-section claim-cats">
+      <div class="claim-lbl">Which categories?
+        <span class="muted">— tick none for a mix of everything</span></div>
+      <input id="claim-search" placeholder="filter categories…" autocomplete="off">
+      <div id="claim-cat-list" class="claim-cat-list"></div>
+    </div>
+    <div class="claim-foot">
+      <span id="claim-summary" class="claim-summary"></span>
+      <button id="claim-cancel" type="button">Cancel</button>
+      <button id="claim-go" type="button" class="claim-go">Claim</button>
+    </div>
+  </div>
+</div>
+<script src="static/app.js"></script>
+</body>
+</html>

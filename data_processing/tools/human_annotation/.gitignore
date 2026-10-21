@@ -1,0 +1,6 @@
+_data/
+
+# The guide's screenshots are documentation, not generated output. The repo-root
+# `*.png` rule would otherwise drop them and a fresh clone would serve the annotator
+# guide with broken images — they are small, few, and change only when the UI does.
+!frontend/*.png

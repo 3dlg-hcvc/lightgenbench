@@ -1,0 +1,32 @@
+# The `lightgen` env: runs data_processing/ and evaluation/ (and the shared utils/).
+#   conda env create -f environment.yml
+#   conda activate lightgen
+#   pip install --no-build-isolation git+https://github.com/NVlabs/nvdiffrast.git@v0.4.0
+# nvdiffrast (evaluation/converters/multiview.py) compiles its CUDA extension against the torch installed
+# here, so it goes in after the env, with a CUDA 12 toolkit (nvcc) and a C++ compiler on the machine.
+# The bake in data_processing/glb2representations/ runs in TRELLIS.2-Emission's env instead (`trellis2`:
+# torch, nvdiffrast, o_voxel, plus `pip install xatlas==0.0.11`); its `collect` step runs here.
+# render_ramp_videos.py calls a system `ffmpeg`.
+name: lightgen
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - python=3.11.14
+  - numpy=2.3.4
+  - pillow=11.3.0
+  - pip=25.2
+  - pip:
+      - bpy==4.3.0               # the review renders (data_processing/render/); needs Python 3.11
+      - hdbscan==0.8.42          # data_processing/tools/categories/
+      - huggingface_hub==0.36.0  # the hf CLI for the downloads
+      - matplotlib==3.10.7
+      - ninja==1.13.0            # builds nvdiffrast's CUDA extension
+      - openai==2.21.0           # the VLM judge and the category labels
+      - opencv-python==4.11.0.86
+      - pandas==2.3.3
+      - pyarrow==22.0.0          # pandas' parquet engine
+      - pydantic==2.12.3
+      - scipy==1.16.3
+      - torch==2.6.0             # evaluation/converters/multiview.py; PyPI's Linux wheel is the CUDA 12.4 build
+      - trimesh==4.9.0

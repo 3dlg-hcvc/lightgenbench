@@ -1,0 +1,97 @@
+You are judging a single 3D object for a dataset that trains a model to generate emission
+textures. An asset has NO ISSUE only if its emission is both CORRECTLY PLACED and ACTUALLY
+VISIBLE when rendered.
+
+You are given eight images of the object, attached IN THIS ORDER:
+1. lit render: the object under normal studio lighting.
+2. emit-only render: the same view, showing only the light the object itself emits;
+   everything else is black.
+3. emission-boosted render: the lit render with raised exposure and a bloom glow, so faint
+   emission stands out.
+4. dark box, emission OFF: the object in a closed dark room, every lamp removed, lit only by
+   a faint fill light; the object's own emission is switched off.
+5. dark box, emission ON: exactly the same room, view and fill light, with the object's own
+   emission switched on. Any light in image 5 that is not in image 4 is affected by the
+   object's emission.
+6. orbit, lit: six views (front, right, back, left, top, bottom) under the lighting of image 1.
+7. orbit, emit-only: the same six views showing only the object's emission.
+8. emission map (UV): the emission texture in UV space, made by baking the object's emission
+   textures from 3D into a UV-atlas.
+
+The dark-box pair is your first test for whether an object glows at all. It is not the last
+word: the fill light can swamp a weak emitter, so when the pair looks flat, check images 2
+and 7 before concluding nothing is emitting.
+
+Use the emission map and the renders TOGETHER. The map shows what was baked; the dark-box
+pair and the emit-only renders show what actually appears. An asset with no issue agrees on both.
+
+Mark HAS ISSUE in any of these cases:
+
+(a) THE EMISSIVE PART DOES NOT MAKE SENSE -> flags ["wrong_emissive_maps"].
+    Two shapes of this defect, both belong here:
+      - GLOW WHERE NOTHING SHOULD GLOW. Some part of the object that has no reason to emit
+        light (the body, the base, the casing, the clothing) is emitting, even faintly,
+        alongside or instead of the parts that should (bulb, screen, headlight, rune, neon
+        tube). That is a bake/material bug, NOT a luminaire, and it is the most common defect.
+        The decisive test is to compare the lit orbit (image 6) with the emit-only orbit
+        (image 7): in a good asset the emit-only orbit shows only the parts that should glow
+        against black; if it shows most of the object, in its own colors, like a dimmer copy
+        of the lit orbit, the whole object is emitting. Confirm on the emission map (image 8),
+        where every non-black area is emitting, however dim. Do not rationalize a widely lit
+        object as "a coherent glow across the intended surface", and do not let correctly
+        placed bright parts excuse a glowing body around them. A typical case is an object
+        whose emission is a copy of its color texture, so the whole body glows in its own
+        colors.
+      - GLOW IN THE WRONG PLACE. The object really emits, but from the wrong geometry — the
+        lampshade instead of the bulb, the body instead of the screen, or an unrelated patch
+        of surface.
+
+(b) EMISSION DOES NOT ACTUALLY RENDER -> flags [] (empty list; explain in rationale).
+    The UV map contains emission, but it does not appear. Two independent ways that shows:
+      - The dark-box pair barely changes between OFF and ON, AND the emit-only / boosted
+        renders show no visible glow either. BOTH must hold. The dark box carries a faint
+        fill light that can swamp a weak emitter, while the emit-only view has nothing but
+        the emission in it — so a dim glow can be invisible in the first and obvious in the
+        second. A flat dark-box pair ALONE is not enough; check the emit-only views before
+        calling it broken.
+      - Or the object plainly renders wrong or too dark, whatever the emission does.
+    Do NOT excuse either case by trusting the UV map over the renders.
+
+(c) NOT A LIGHT-EMITTER -> flags ["not_emissive_object"].
+    Be strict about what counts as emission. Pale, white, glossy, metallic, neon-coloured
+    or brightly-painted MATERIALS are NOT emission — they merely look bright under the
+    scene light. Count something as emission only if it still glows when nothing else lights
+    it, i.e. only if the dark-box ON render adds light the OFF render does not have. A
+    stylized/fantasy glow (magic sword, crystal, cartoon glow) IS emission and is perfectly
+    fine — but only when it genuinely glows rather than being a bright-coloured surface.
+
+(d) MULTIPLE OBJECTS -> flags ["multiple_object"].
+    A SCENE, SET or PACK: several distinct items arranged or bundled together — a product
+    set, a diorama, a room, furniture plus separate props.
+    IMPORTANT: a single character or figure TOGETHER WITH props it holds, wears or stands on
+    is ONE object. A person holding an axe, a knight with a sword, a figure on a base — none
+    of these is multiple_object. Flag only when the asset is genuinely a collection.
+
+(e) COMPLETELY BLACK EMISSION -> flags ["zero_emission_map"].
+    ONLY when the emission map is entirely black. Small, faint, or few emitting regions are
+    NOT zero — never use this flag for them. Strictly-black shapes are filtered out upstream,
+    so this flag should almost never apply.
+
+(f) YOU GENUINELY CANNOT TELL -> flags [] (empty list; say why in rationale).
+    If the emitting region is too small to judge, the views are unclear, or an image failed
+    to load, mark HAS ISSUE rather than guessing NO ISSUE. Use this only for real uncertainty,
+    not for merely borderline cases you can still call.
+
+Otherwise NO ISSUE: light comes from the parts that should glow AND it actually shows up
+in the renders. Realistic and artistic/stylized are equally fine.
+
+You may return more than one flag. If it has an issue that none of the four flags
+({flags}) describes, return an empty flags list and give the reason in rationale.
+
+Return:
+- verdict: "has_issue" or "no_issue".
+- style: "real" (photoreal) or "artistic" (stylized/cartoon/game-art). Always set it.
+- emission_complete: true if every part that should glow does; false if it is the right
+  KIND of object but some expected parts are unlit (e.g. a car with only the dashboard
+  lit). An incomplete object is still "no_issue".
+- rationale: one short sentence.

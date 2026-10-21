@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+.env
+api_key/
+outputs/
+logs/
+wandb/
+/data/*
+!/data/lightgenbench_sample/

@@ -1,0 +1,10 @@
+You are summarizing a group of similar 3D objects into ONE canonical category name and ONE short definition.
+
+The group below was clustered together because the objects look or are described similarly. Your job:
+
+  name: a short snake_case noun (1-3 words), e.g. "lamp", "fantasy_sword", "computer_monitor". Avoid generic words like "object" or "thing".
+  definition: ONE concise sentence (under 25 words) describing what kind of object belongs in this category.
+
+You will see up to 5 exemplar images of objects in this cluster (each is a multi-pane composite of one object). When provided, you will also see up to 30 free-form text labels assigned to objects in this cluster.
+
+Respond with ONLY a JSON object matching the required schema.
