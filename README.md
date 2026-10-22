@@ -64,7 +64,7 @@ To build the dataset yourself instead, see [Build the Dataset Yourself](#build-t
 |---|---|---|---|
 | [TEXGen-Emission](https://github.com/dongchen-yang/TEXGen-Emission) | UV-domain | [TEXGen](https://github.com/CVMI-Lab/TEXGen) | coming soon |
 | [TRELLIS.2-Emission](https://github.com/3dlg-hcvc/TRELLIS.2-Emission) | sparse-voxel | [TRELLIS.2](https://github.com/microsoft/TRELLIS.2) | coming soon |
-| [Hunyuan3D-Emission](https://github.com/dongchen-yang/Hunyuan3D-Emission/tree/release) | multi-view | [Hunyuan3D-2.1](https://github.com/Tencent-Hunyuan/Hunyuan3D-2.1) | coming soon |
+| [Hunyuan3D-Emission](https://github.com/dongchen-yang/Hunyuan3D-Emission) | multi-view | [Hunyuan3D-2.1](https://github.com/Tencent-Hunyuan/Hunyuan3D-2.1) | coming soon |
 | [SegviGen-Emission](https://github.com/3dlg-hcvc/SegviGen-Emission) | segmentation-based (on voxels) | [SegviGen](https://github.com/Nelipot-Lee/SegviGen) | coming soon |
 
 Our checkpoints will be in the Hugging Face repo `3dlg-hcvc/LightgenBench-baselines`, one folder per baseline.
