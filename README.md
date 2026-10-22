@@ -62,12 +62,12 @@ To build the dataset yourself instead, see [Build the Dataset Yourself](#build-t
 ## Baselines
 | Baseline | Method family | Built on | Checkpoint |
 |---|---|---|---|
-| [TEXGen-Emission](https://github.com/dongchen-yang/TEXGen-Emission) | UV-domain | [TEXGen](https://github.com/CVMI-Lab/TEXGen) | coming soon |
-| [TRELLIS.2-Emission](https://github.com/3dlg-hcvc/TRELLIS.2-Emission) | sparse-voxel | [TRELLIS.2](https://github.com/microsoft/TRELLIS.2) | coming soon |
-| [Hunyuan3D-Emission](https://github.com/dongchen-yang/Hunyuan3D-Emission) | multi-view | [Hunyuan3D-2.1](https://github.com/Tencent-Hunyuan/Hunyuan3D-2.1) | coming soon |
-| [SegviGen-Emission](https://github.com/3dlg-hcvc/SegviGen-Emission) | segmentation-based (on voxels) | [SegviGen](https://github.com/Nelipot-Lee/SegviGen) | coming soon |
+| [TEXGen-Emission](https://github.com/dongchen-yang/TEXGen-Emission) | UV-domain | [TEXGen](https://github.com/CVMI-Lab/TEXGen) | [Hugging Face](https://huggingface.co/3dlg-hcvc/LightgenBench-baselines/tree/main/TEXGen-Emission) |
+| [TRELLIS.2-Emission](https://github.com/3dlg-hcvc/TRELLIS.2-Emission) | sparse-voxel | [TRELLIS.2](https://github.com/microsoft/TRELLIS.2) | [Hugging Face](https://huggingface.co/3dlg-hcvc/LightgenBench-baselines/tree/main/TRELLIS.2-Emission) |
+| [Hunyuan3D-Emission](https://github.com/dongchen-yang/Hunyuan3D-Emission) | multi-view | [Hunyuan3D-2.1](https://github.com/Tencent-Hunyuan/Hunyuan3D-2.1) | [Hugging Face](https://huggingface.co/3dlg-hcvc/LightgenBench-baselines/tree/main/Hunyuan3D-Emission) |
+| [SegviGen-Emission](https://github.com/3dlg-hcvc/SegviGen-Emission) | segmentation-based (on voxels) | [SegviGen](https://github.com/Nelipot-Lee/SegviGen) | [Hugging Face](https://huggingface.co/3dlg-hcvc/LightgenBench-baselines/tree/main/SegviGen-Emission) |
 
-Our checkpoints will be in the Hugging Face repo `3dlg-hcvc/LightgenBench-baselines`, one folder per baseline.
+Our checkpoints are in the Hugging Face repo [`3dlg-hcvc/LightgenBench-baselines`](https://huggingface.co/3dlg-hcvc/LightgenBench-baselines), one folder per baseline.
 Each baseline's README covers its setup, training, and prediction with your checkpoint or ours.
 
 
@@ -100,7 +100,7 @@ SKIP_DOWNLOAD=1 SPLITS_SHA256=$(sha256sum ../data/lightgenbench_sample/splits.js
     bash script/lightgenbench/prepare_lightgenbench.sh ../data/lightgenbench_sample <data_root>
 NUM_GPUS=1 bash script/lightgenbench/run_chain.sh latents <data_root>
 
-# Download our checkpoints (coming soon) and predict the emission of the two shapes
+# Download our checkpoints and predict the emission of the two shapes
 hf download 3dlg-hcvc/LightgenBench-baselines --include "TRELLIS.2-Emission/*" --local-dir checkpoints
 NUM_GPUS=1 VAE_CKPT=checkpoints/TRELLIS.2-Emission/vae/ckpts/vae.ckpt DIT_CKPT=checkpoints/TRELLIS.2-Emission/dit/ckpts/dit.ckpt \
     bash script/lightgenbench/run_chain.sh predict <data_root>
