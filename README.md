@@ -155,4 +155,4 @@ The two shapes in `data/lightgenbench_sample/` are under [CC BY 4.0](https://cre
 
 
 ## Acknowledgments
-To be added.
+This work was funded in part by a Canada Research Chair, NSERC Discovery Grants, and enabled by support from the Digital Research Alliance of Canada, and an NVIDIA Academic Grant Award. We thank Denys Iliash, Han-Hung Lee, and Xiaohao Sun for helpful discussions.
