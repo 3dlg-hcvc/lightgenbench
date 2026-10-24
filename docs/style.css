@@ -44,7 +44,7 @@ img { display: block; max-width: 100%; height: auto; }
 .btn--on:hover { background: var(--accent-ink); }
 .hero__img { width: 100%; border-radius: var(--radius); }
 /* the task sentence, under the hero */
-.lead { margin: 28px auto 0; max-width: 720px; text-align: center; font-size: 19px; color: var(--ink); }
+.lead { margin: 28px auto 0; max-width: 720px; text-align: center; font-size: 19px; color: var(--ink); text-wrap: pretty; }
 
 /* blocks: a heading, a sentence, one visual */
 .block { padding-top: 72px; }
