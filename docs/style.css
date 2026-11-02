@@ -36,10 +36,11 @@ main.wrap { padding-bottom: 72px; }
 .affil { margin: 4px 0 28px; color: var(--ink-soft); font-size: 15px; }
 .buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
 .btn {
-  display: inline-flex; align-items: center; padding: 9px 18px; border-radius: 999px;
+  display: inline-flex; align-items: center; gap: 8px; padding: 9px 18px; border-radius: 999px;
   font-size: 15px; font-weight: 600; border: 1px solid var(--line);
 }
 .btn:hover { text-decoration: none; }
+.btn__icon { width: 18px; height: 18px; flex: none; }
 .btn--off { color: #6f6d69; cursor: default; }
 .btn--on { color: #111; background: var(--accent); border-color: var(--accent); }
 .btn--on:hover { background: var(--accent-ink); }
