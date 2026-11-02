@@ -6,7 +6,7 @@
 Simon Fraser University
 
 [![Project Page](https://img.shields.io/badge/Project%20Page-1f1f1f?style=for-the-badge&logo=data:image%2Fsvg%2Bxml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMiAzMic%2BPGNpcmNsZSBjeD0nMTYnIGN5PScxNicgcj0nNycgZmlsbD0nI2Y1OWUwYicvPjxjaXJjbGUgY3g9JzE2JyBjeT0nMTYnIHI9JzEzJyBmaWxsPSdub25lJyBzdHJva2U9JyNmNTllMGInIHN0cm9rZS1vcGFjaXR5PScuNDUnIHN0cm9rZS13aWR0aD0nMi41Jy8%2BPC9zdmc%2B)](https://3dlg-hcvc.github.io/lightgenbench/)
-[![Paper](https://img.shields.io/badge/Paper-Coming%20Soon-lightgrey?style=for-the-badge&logo=arxiv&logoColor=white)](#)
+[![arXiv](https://img.shields.io/badge/arXiv-2610.39038-b31b1b?style=for-the-badge&logo=arxiv&logoColor=white)](https://arxiv.org/abs/2610.39038)
 [![Dataset](https://img.shields.io/badge/Dataset-FFD21E?style=for-the-badge&logo=huggingface&logoColor=000)](https://huggingface.co/datasets/3dlg-hcvc/LightgenBench)
 
 LightGenBench is a benchmark for emission generation.
@@ -146,10 +146,11 @@ The two shapes in `data/lightgenbench_sample/` are under [CC BY 4.0](https://cre
 
 ## Citation
 ```
-@inproceedings{lightgenbench2026,
-  title  = {LightGenBench: A Benchmark for 3D Emission Generation},
-  author = {Yang, Dongchen and Yan, Xingguang and Savva, Manolis},
-  year   = {2026}
+@article{lightgenbench2026,
+  title   = {LightGenBench: A Benchmark for 3D Emission Generation},
+  author  = {Yang, Dongchen and Yan, Xingguang and Savva, Manolis},
+  journal = {arXiv preprint arXiv:2610.39038},
+  year    = {2026}
 }
 ```
 

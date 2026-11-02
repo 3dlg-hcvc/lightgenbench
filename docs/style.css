@@ -26,6 +26,7 @@ a:hover { text-decoration: underline; }
 img { display: block; max-width: 100%; height: auto; }
 
 .wrap { max-width: var(--w); margin: 0 auto; padding: 0 20px; }
+main.wrap { padding-bottom: 72px; }
 
 /* hero */
 .hero { text-align: center; padding-top: 72px; padding-bottom: 36px; }
@@ -116,9 +117,6 @@ img { display: block; max-width: 100%; height: auto; }
 }
 .copy:hover { background: #44403c; color: #fff; }
 
-/* footer.wrap, not footer: .wrap's margin shorthand would otherwise zero the top margin */
-footer.wrap { margin-top: 88px; padding-top: 24px; padding-bottom: 56px; border-top: 1px solid var(--line); color: var(--ink-soft); font-size: 14px; }
-footer code { font-family: var(--mono); font-size: 13px; }
 
 /* lightbox */
 .lb { position: fixed; inset: 0; z-index: 100; display: none; background: rgba(0,0,0,.95); padding: 24px; cursor: zoom-out; }
